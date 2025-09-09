@@ -1,0 +1,300 @@
+// src/styles/Style.scss
+
+// Carica i moduli Sass necessari
+
+@use "sass:map";
+
+// Disabilita RFS per evitare avvisi di deprecazione in _rfs.scss
+$enable-rfs: false;
+
+// Definisci i colori personalizzati
+$primary: #6f42c1; // Viola vibrante
+$secondary: #fd7e14; // Arancione vibrante
+$dark: #212529; // Sfondo scuro
+$body-bg: $dark; // Sfondo generale del body
+$body-color: #f8f9fa; // Colore del testo chiaro
+$navbar-bg: #00000079; // Navbar più scura del body-bg
+
+// Personalizza i colori del tema
+$theme-colors: (
+	"primary": $primary,
+	"secondary": $secondary,
+	"success": #198754,
+	"info": #0dcaf0,
+	"warning": #ffc107,
+	"danger": #dc3545,
+	"light": #f8f9fa,
+	"dark": $dark,
+);
+
+// Importa il resto di Bootstrap
+@use "../../node_modules/bootstrap/scss/bootstrap" with (
+	$primary: $primary,
+	$secondary: $secondary,
+	$theme-colors: $theme-colors,
+	$body-bg: $body-bg,
+	$body-color: $body-color
+);
+
+[data-bs-theme="dark"] {
+	background-color: $dark;
+	color: $body-color;
+
+	.text-primary {
+		color: $primary !important;
+	}
+
+	.text-secondary {
+		color: $secondary !important;
+	}
+
+	.btn-primary {
+		background-image: linear-gradient(135deg, $primary, $secondary);
+		background-color: transparent;
+		border: 0px solid transparent; // O usa border-color: $primary se vuoi un bordo
+		color: #ffffff; // O $body-color per il tuo tema
+
+		&:hover {
+			background-image: linear-gradient(90deg, mix(black, $primary, 20%), mix(black, $secondary, 20%));
+			border-color: mix(black, $primary, 10%);
+		}
+
+		&:focus,
+		&:focus-visible {
+			box-shadow: 0 0 0 0.25rem rgba($primary, 0.5);
+		}
+	}
+
+	.btn-secondary {
+		background-color: $secondary;
+		border-color: $secondary;
+
+		&:hover {
+			background-color: mix(black, $secondary, 10%);
+			border-color: mix(black, $secondary, 10%);
+		}
+
+		&:focus,
+		&:focus-visible {
+			box-shadow: 0 0 0 0.25rem rgba($secondary, 0.5);
+		}
+	}
+
+	.form-control {
+		background-color: #343a40;
+		color: $body-color;
+		border-color: mix(black, #ffffff, 40%);
+
+		&:focus {
+			background-color: #343a40;
+			color: $body-color;
+			border-color: $secondary;
+			box-shadow: 0 0 0 0.25rem rgba(253, 126, 20, 0.25);
+		}
+	}
+
+	.form-card {
+		background-color: #1e2124;
+		border: 1px solid mix(black, #ffffff, 40%);
+		border-radius: 1rem;
+		padding: 1rem;
+		box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+		margin-top: 4em;
+
+		h4 {
+			color: mix(black, #ffffff, 20%);
+		}
+	}
+
+	.alert-success {
+		background-color: mix(black, #198754, 40%);
+		color: $body-color;
+	}
+
+	.alert-danger {
+		background-color: mix(black, #dc3545, 40%);
+		color: $body-color;
+	}
+
+	
+	.card-nav-container.navbar.navbar-expand-lg,
+	.card-nav-container.navbar.navbar-expand-lg.navbar-dark {
+		// --bs-navbar-bg: $navbar-bg !important; // Sovrascrivi la variabile di Bootstrap
+		background-color: $navbar-bg !important;
+		position: absolute;
+		top: 1.5em;
+		left: 50%;
+		transform: translateX(-50%);
+		width: 90%;
+		max-width: 800px;
+		z-index: 1000;
+		box-sizing: border-box;
+		border: 0.5px solid rgba($body-color, 0.1);
+		border-radius: 0.75rem;
+		box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+		height: 60px;
+		padding: 0;
+		overflow: visible;
+		
+		.card-nav-top {
+			position: relative; // Modificato per evitare conflitti con collapse
+			height: 60px;
+			display: flex;
+			align-items: center;
+			justify-content: center; // Centra il contenuto	
+			padding: 0.5rem 1rem; 
+		}
+
+		.navbar-logo-container {
+			position: absolute;
+			left: 1rem;
+			display: flex;
+			align-items: center;
+
+			img {
+				margin-right: 0.5rem;
+				width: 40px;
+				height: 40px;
+				object-fit: contain; // Mantiene le proporzioni dell'immagine
+			}
+		}
+
+		.navbar-brand-container {
+			position: absolute;
+			left: 50%;
+			transform: translateX(-50%);
+			display: flex;
+			justify-content: center; // Centra il contenuto
+			width: 100%;
+			margin-bottom: 0.3rem; // Spazio sotto il titolo
+		}
+
+		.navbar-brand {
+			// Assicura che il titolo sia centrato correttamente
+			margin: 0;
+			font-size: 2.4rem !important; // Aumenta la dimensione del titolo
+			line-height: 1; // Migliora la leggibilità
+			font-weight: 700; // Opzionale: rende il titolo più marcato
+			text-align: center;
+			text-shadow: 
+				-.5px -.5px 0 #ffffff,  
+				.5px -.5px 0 #ffffff,
+				-.5px  .5px 0 #ffffff,
+				.5px  .5px 0 #ffffff;
+		}
+
+		.cta-button-container {
+			position: absolute;
+			right: 1rem;
+			display: flex;
+			align-items: center;
+		}
+		
+		.card-nav-cta-button {
+			// Stile per il bottone Registrati
+			padding: 0.5rem 1rem;
+			background-image: linear-gradient(90deg, $primary, $secondary);
+			background-color: transparent;
+			border: 0px solid transparent; // O usa border-color: $secondary se vuoi un bordo
+			color: #ffffff; // Testo bianco per contrasto (o usa $body-color: #f8f9fa)
+			
+			&:hover {
+				background-image: linear-gradient(90deg, mix(black, $primary, 20%), mix(black, $secondary, 20%));
+				border-color: mix(black, $secondary, 10%);
+			}
+			
+			&:focus,
+			&:focus-visible {
+				box-shadow: 0 0 0 0.25rem rgba($secondary, 0.5); // Ombreggiatura arancione per il focus
+			}
+
+			//stile cardanvdropdown
+			&.dropdown {
+				padding: 0; // Rimuovi il padding per allineare correttamente
+				// display: inline flex;
+				align-items: center;
+				border-radius: 0.5rem ;
+				
+				.dropdown-toggle{
+					padding: 0.5rem 1rem;
+					border-radius: 0.5rem;
+					display: flex;
+					align-items: center;
+					width: 100%;
+					box-sizing: border-box;
+					
+					&::after {
+						border-top-color: #ffffff; // Colore della freccia per contrasto
+					}
+
+				}
+				
+				.dropdown-menu {
+					background-color: $dark;
+					color: $body-color;
+					width: 100%; // Stessa larghezza del bottone
+					min-width: 100%; // Assicura che non sia più largo
+					border-radius: 0.5rem; // Angoli smussati anche per il menu
+	
+					.dropdown-item {
+						color: $body-color;
+	
+						&:hover {
+							background-color: mix(black, $dark, 20%);
+							color: #ffffff;
+						}
+					}
+	
+					.dropdown-divider {
+						border-top: 1px solid mix(black, #ffffff, 50%); // Divider più chiaro
+					}
+				}
+			}
+
+		}
+	}
+
+	.cardnav-dropdown-toast-form {
+		background-color: $dark !important; // Colore di sfondo rosso scuro
+		color: $body-color !important; // Colore del testo chiaro
+		border-radius: 0.5rem; // Angoli smussati
+		box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); // Ombra per profondità
+		border: 1px solid mix(black, #ffffff, 40%); // Bordo leggero
+		padding: 2rem; // Spaziatura interna
+		min-width: 400px; // Larghezza minima
+		max-width: 90vw; // Larghezza massima per schermi piccoli
+
+		.Toastify__close-button {
+			color: $body-color !important; // Colore del testo chiaro
+		}
+		
+		p {
+			margin: 0 0 1rem 0; // Rimuovi margine dai paragrafi
+			color: $body-color;
+			text-align: center; // Centra il testo
+		}
+
+		.toast-cancel-button {
+			flex: 1 1 0; // Occupa metà della larghezza
+			background-color: black;
+			border: 1px solid $body-color; // Bordo chiaro
+			color: $body-color !important; // Colore del testo chiaro
+			
+			&:hover {
+				background-color: mix(white, black, 20%);
+			}
+		}
+
+		.toast-confirm-button {
+			flex: 1 1 0; // Occupa metà della larghezza
+			background-color: $primary;
+			border: none; // Bordo chiaro
+			color: $body-color !important; // Colore del testo chiaro
+			
+			&:hover {
+				background-color: mix(black, $primary, 20%);
+			}
+		}
+	}
+
+}
