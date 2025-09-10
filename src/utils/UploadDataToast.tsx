@@ -41,7 +41,7 @@ const UploadToast = () => {
 	const handleCSVResults = (
 		data: UploadData[],
 		errors: Papa.ParseError[],
-		meta?: Papa.ParseMeta,
+		_meta?: Papa.ParseMeta,
 	) => {
 		if (errors.length) {
 			toast.error("Errore nel parsing del file CSV.");
@@ -93,7 +93,9 @@ const UploadToast = () => {
 			if (success) {
 				toast.success("Dati caricati con successo!");
 			} else {
-				toast.error(`Errore nel caricamento dei dati: ${error}`);
+				toast.error("Errore nel caricamento dei dati: ${error}", {
+					autoClose: 3000,
+				});
 			}
 		});
 	};

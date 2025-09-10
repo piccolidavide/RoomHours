@@ -1,20 +1,25 @@
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import type { UploadData } from "../types/Types";
+import retrieveRoomUsage from "../utils/RetrieveRoomUsage";
 
-let instance: SupabaseClient | null = null;
+const getSupabaseClient = () => {
+	let instance: SupabaseClient | null = null;
 
-if (!instance) {
-	instance = createClient(
-		import.meta.env.VITE_SUPABASE_URL,
-		import.meta.env.VITE_SUPABASE_ANON_KEY,
-	);
-}
+	return (): SupabaseClient => {
+		if (!instance) {
+			console.log("Creating Supabase client...");
+			instance = createClient(
+				import.meta.env.VITE_SUPABASE_URL,
+				import.meta.env.VITE_SUPABASE_ANON_KEY,
+			);
+		}
 
-export const supabase = instance;
+		return instance;
+	};
+};
 
-/* async function sleep(ms: number): Promise<void> {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-} */
+export const supabase = getSupabaseClient();
+
 const signUp = async (
 	username: string,
 	age: number,
@@ -25,7 +30,7 @@ const signUp = async (
 
 	try {
 		// Registrazione utente con Supabase
-		const { data, error } = await supabase.auth.signUp({
+		const { data, error } = await supabase().auth.signUp({
 			email,
 			password,
 			options: {
@@ -45,7 +50,7 @@ const signUp = async (
 		}
 
 		// Inserimento dei dati nella tabella users
-		const { error: profileError } = await supabase
+		const { error: profileError } = await supabase()
 			.from("users")
 			.insert([{ id: data.user.id, username, age, email }]);
 
@@ -63,7 +68,7 @@ const signUp = async (
 
 const signIn = async (email: string, password: string) => {
 	try {
-		const { data, error } = await supabase.auth.signInWithPassword({
+		const { data, error } = await supabase().auth.signInWithPassword({
 			email,
 			password,
 		});
@@ -81,7 +86,7 @@ const signIn = async (email: string, password: string) => {
 
 const signOut = async () => {
 	try {
-		await supabase.auth.signOut();
+		await supabase().auth.signOut();
 		// User is signed out
 	} catch (error) {
 		// Handle signout error
@@ -91,7 +96,7 @@ const signOut = async () => {
 
 const getCurrentUser = async () => {
 	try {
-		const { data } = await supabase.auth.getUser();
+		const { data } = await supabase().auth.getUser();
 
 		return data.user;
 	} catch (error) {
@@ -100,7 +105,7 @@ const getCurrentUser = async () => {
 };
 
 const onAuthStateChange = (callback: (user: any) => void) => {
-	const { data: authListener } = supabase.auth.onAuthStateChange(
+	const { data: authListener } = supabase().auth.onAuthStateChange(
 		(_event, session) => {
 			callback(session?.user ?? null);
 		},
@@ -125,7 +130,7 @@ const uploadRoomData = async (
 	// Salvo le stanze nel database se non esistono già
 	for (const roomName of roomNames) {
 		// Controllo se la stanza esiste già
-		const { data: existingRoom, error: fetchError } = await supabase
+		const { data: existingRoom, error: fetchError } = await supabase()
 			.from("rooms")
 			.select("id")
 			.eq("user_id", user.id)
@@ -141,7 +146,7 @@ const uploadRoomData = async (
 			roomNamesId[roomName] = existingRoom.id;
 		} else {
 			// creo nuova stanza
-			const { data: roomData, error: insertError } = await supabase
+			const { data: roomData, error: insertError } = await supabase()
 				.from("rooms")
 				.insert({ user_id: user.id, name: roomName })
 				.select("id")
@@ -156,37 +161,33 @@ const uploadRoomData = async (
 		}
 	}
 
-	console.log("Room names inserted successfully: ", roomNamesId);
+	// console.log("Room names inserted successfully: ", roomNamesId);
 
-	let insertedEntries = 0;
-	for (const entry of data) {
-		const timestamp = new Date(entry.Timestamp);
-		if (isNaN(timestamp.getTime())) {
-			continue; // Salta questa entry se il timestamp non è valido
-		}
+	const periods = retrieveRoomUsage(user.id, roomNames, roomNamesId, data);
 
-		const roomWithData = Object.keys(entry).find((key) => entry[key] == 1);
+	const { error: insertError } = await supabase()
+		.from("rooms_usage_periods")
+		.insert(periods);
 
-		if (roomWithData) {
-			const { error: insertError } = await supabase
-				.from("room_usage")
-				.insert({
-					user_id: user.id,
-					room_id: roomNamesId[roomWithData],
-					timestamp,
-					presence: true,
-				});
-
-			if (insertError) {
-				console.error("Errore nell'inserimento dei dati:", insertError);
-				continue; // Salta questa entry e continua con la successiva
-			}
-
-			insertedEntries++;
-		}
+	if (insertError) {
+		return { success: false, error: insertError.message };
 	}
 
-	console.log("Inserted entries:", insertedEntries);
+	// console.log(
+	// 	"Periods: ",
+	// 	periods.map(({ room_id, start_timestamp, end_timestamp, value }) => {
+	// 		const roomKey = Object.keys(roomNamesId).find(
+	// 			(key) => roomNamesId[key] === room_id,
+	// 		);
+	// 		const roomName = roomKey ? roomNamesId[roomKey] : "unknown";
+	// 		return `${roomName} - ${
+	// 			start_timestamp ? start_timestamp.toISOString() : "null"
+	// 		} - ${
+	// 			end_timestamp ? end_timestamp.toISOString() : "null"
+	// 		} - ${value}`;
+	// 	}),
+	// );
+
 	return { success: true };
 };
 

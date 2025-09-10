@@ -9,6 +9,7 @@ import HomePage from "./pages/HomePage";
 import { ToastContainer } from "react-toastify";
 import CardNav from "./pages/CardNav";
 import { AuthProvider } from "./context/AuthContext";
+import ErrorBoundary from "./utils/ErrorBoundary";
 
 //const items: CardNavItem[] = [];
 
@@ -16,7 +17,9 @@ createRoot(document.getElementById("root")!).render(
 	<StrictMode>
 		<BrowserRouter>
 			<AuthProvider>
-				<CardNav title="Room hours application" />
+				<ErrorBoundary>
+					<CardNav title="Room hours application" />
+				</ErrorBoundary>
 				<ToastContainer
 					position="top-right"
 					autoClose={1000}
