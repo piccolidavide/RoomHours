@@ -16,37 +16,26 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 	const [loading, setLoading] = useState<boolean>(true);
 
 	useEffect(() => {
-		let mounted = true;
-
 		const initializeAuth = async () => {
 			try {
 				const currentUser = await getCurrentUser();
-				if (mounted) {
-					setUser(currentUser);
-					setLoading(false);
-				}
+				setUser(currentUser);
+				setLoading(false);
 			} catch (error) {
 				console.error("Error initializing authentication:", error);
-				if (mounted) {
-					setUser(null);
-					setLoading(false);
-				}
+				setUser(null);
+				setLoading(false);
 			}
 		};
 
 		initializeAuth();
 
 		const unsubscribe = onAuthStateChange((newUser) => {
-			if (mounted) {
-				setUser(newUser);
-				setLoading(false);
-			}
+			setUser(newUser);
+			setLoading(false);
 		});
 
-		return () => {
-			mounted = false;
-			unsubscribe();
-		};
+		return () => unsubscribe();
 	}, []);
 
 	return (

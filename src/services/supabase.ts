@@ -1,6 +1,8 @@
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
-import type { UploadData } from "../types/Types";
+import type { RoomsData, RoomsUsageData } from "../types/Types";
 import retrieveRoomUsage from "../utils/RetrieveRoomUsage";
+import { use } from "react";
+import { toast } from "react-toastify";
 
 const getSupabaseClient = () => {
 	let instance: SupabaseClient | null = null;
@@ -118,7 +120,7 @@ const onAuthStateChange = (callback: (user: any) => void) => {
 
 const uploadRoomData = async (
 	roomNames: string[],
-	data: UploadData[],
+	data: RoomsData[],
 ): Promise<{ success: boolean; error?: string }> => {
 	const user = await getCurrentUser();
 	if (!user) {
@@ -191,6 +193,39 @@ const uploadRoomData = async (
 	return { success: true };
 };
 
+const retrieveUserData = async (userId: string): Promise<RoomsUsageData[]> => {
+	const query = supabase()
+		.from("rooms_usage_periods")
+		.select(
+			`start_timestamp,
+			end_timestamp,
+			value,
+			rooms(name),
+			users(username)`,
+		)
+		.eq("user_id", userId);
+
+	const { data, error } = await query;
+	if (error) {
+		toast.error("Errore nel caricamento dei dati: " + error, {
+			autoClose: 3000,
+		});
+		throw error;
+	}
+
+	const mappedData: RoomsUsageData[] = data.map((item: any) => ({
+		user_id: userId,
+		username: item.users.username,
+		room_name: item.rooms ? item.rooms.name : null,
+		start_timestamp: item.start_timestamp,
+		end_timestamp: item.end_timestamp,
+		value: item.value,
+	}));
+
+	// TODO: Implement actual data retrieval logic
+	return mappedData;
+};
+
 export default supabase;
 export {
 	signUp,
@@ -199,4 +234,5 @@ export {
 	getCurrentUser,
 	onAuthStateChange,
 	uploadRoomData,
+	retrieveUserData,
 };

@@ -2,13 +2,13 @@ import { useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { Button, Form } from "react-bootstrap";
 import Papa from "papaparse";
-import type { UploadData } from "../types/Types";
+import type { RoomsData } from "../types/Types";
 import { uploadRoomData } from "../services/supabase";
 
 const UploadToast = () => {
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const [rooms, setRooms] = useState<string[]>([]);
-	const [parsedData, setParsedData] = useState<UploadData[]>([]);
+	const [parsedData, setParsedData] = useState<RoomsData[]>([]);
 
 	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const file = e.target.files?.[0];
@@ -20,7 +20,7 @@ const UploadToast = () => {
 				dynamicTyping: true,
 				complete: (results) => {
 					handleCSVResults(
-						results.data as UploadData[],
+						results.data as RoomsData[],
 						results.errors,
 						results.meta,
 					);
@@ -39,7 +39,7 @@ const UploadToast = () => {
 	};
 
 	const handleCSVResults = (
-		data: UploadData[],
+		data: RoomsData[],
 		errors: Papa.ParseError[],
 		_meta?: Papa.ParseMeta,
 	) => {
@@ -93,7 +93,7 @@ const UploadToast = () => {
 			if (success) {
 				toast.success("Dati caricati con successo!");
 			} else {
-				toast.error("Errore nel caricamento dei dati: ${error}", {
+				toast.error("Errore nel caricamento dei dati: " + error, {
 					autoClose: 3000,
 				});
 			}

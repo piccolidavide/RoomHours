@@ -1,12 +1,12 @@
-import type { UploadData } from "../types/Types";
+import type { Period, UploadData } from "../types/Types";
 
-interface Period {
-	user_id: string;
-	room_id: string | null;
-	start_timestamp: Date;
-	end_timestamp: Date;
-	value: number;
-}
+// interface Period {
+// 	user_id: string;
+// 	room_id: string | null;
+// 	start_timestamp: Date;
+// 	end_timestamp: Date;
+// 	value: number;
+// }
 
 export default function retrieveRoomUsage(
 	userId: string,

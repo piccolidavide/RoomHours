@@ -1,6 +1,21 @@
-export type UploadData = {
+export type RoomsData = {
 	Timestamp: string;
 	[roomName: string]: string | number;
 };
 
-// export type { UploadData };
+export type Period = {
+	user_id: string;
+	room_id: string | null;
+	start_timestamp: Date;
+	end_timestamp: Date;
+	value: number;
+};
+
+export type RoomsUsageData = {
+	user_id: string;
+	username: string;
+	room_name: string | null;
+	start_timestamp: Date;
+	end_timestamp: Date;
+	value: number;
+};

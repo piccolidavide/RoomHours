@@ -297,4 +297,38 @@ $theme-colors: (
 		}
 	}
 
+	.pie-chart-container {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		min-height: 100vh;
+	}
+
+	.pie-chart-card{
+		width: min(25rem, 90%);
+		height: min(20rem, 90%);
+		box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+		margin: auto;
+
+		.card-body{
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			padding: 1rem;
+
+			canvas{
+				max-height: fit-content;
+				max-width: 100%;
+			}
+
+			p{
+				text-align: center;
+				font-weight: bold;
+				font-size: 1.2rem;
+				margin-top: 1rem;
+				color: $body-color;
+			}
+		}
+	}
+
 }
