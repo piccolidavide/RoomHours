@@ -69,8 +69,8 @@ const UploadToast = () => {
 		setRooms(roomNames);
 		setParsedData(data);
 
-		console.log("Parsed Rooms:", roomNames);
-		console.log("Parsed Data:", data[0]);
+		// console.log("Parsed Rooms:", roomNames);
+		// console.log("Parsed Data:", data[0]);
 	};
 
 	const handleConfirmClick = (
@@ -86,8 +86,8 @@ const UploadToast = () => {
 		toast.dismiss();
 		toast.success("File caricato con successo!");
 
-		console.log("Uploading data for rooms:", rooms);
-		console.log("Data sample:", parsedData[0]);
+		// console.log("Uploading data for rooms:", rooms);
+		// console.log("Data sample:", parsedData[0]);
 
 		uploadRoomData(rooms, parsedData).then(({ success, error }) => {
 			if (success) {

@@ -6,8 +6,8 @@ export type RoomsData = {
 export type Period = {
 	user_id: string;
 	room_id: string | null;
-	start_timestamp: Date;
-	end_timestamp: Date;
+	start_timestamp: string;
+	end_timestamp: string;
 	value: number;
 };
 

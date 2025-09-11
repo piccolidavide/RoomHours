@@ -1,7 +1,6 @@
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import type { RoomsData, RoomsUsageData } from "../types/Types";
 import retrieveRoomUsage from "../utils/RetrieveRoomUsage";
-import { use } from "react";
 import { toast } from "react-toastify";
 
 const getSupabaseClient = () => {
@@ -9,7 +8,7 @@ const getSupabaseClient = () => {
 
 	return (): SupabaseClient => {
 		if (!instance) {
-			console.log("Creating Supabase client...");
+			// console.log("Creating Supabase client...");
 			instance = createClient(
 				import.meta.env.VITE_SUPABASE_URL,
 				import.meta.env.VITE_SUPABASE_ANON_KEY,
@@ -163,11 +162,9 @@ const uploadRoomData = async (
 		}
 	}
 
-	// console.log("Room names inserted successfully: ", roomNamesId);
-
 	const periods = retrieveRoomUsage(user.id, roomNames, roomNamesId, data);
 
-	const { error: insertError } = await supabase()
+	const { /* data: periodData, */ error: insertError } = await supabase()
 		.from("rooms_usage_periods")
 		.insert(periods);
 
@@ -203,7 +200,8 @@ const retrieveUserData = async (userId: string): Promise<RoomsUsageData[]> => {
 			rooms(name),
 			users(username)`,
 		)
-		.eq("user_id", userId);
+		.eq("user_id", userId)
+		.order("end_timestamp", { ascending: true });
 
 	const { data, error } = await query;
 	if (error) {
@@ -217,12 +215,11 @@ const retrieveUserData = async (userId: string): Promise<RoomsUsageData[]> => {
 		user_id: userId,
 		username: item.users.username,
 		room_name: item.rooms ? item.rooms.name : null,
-		start_timestamp: item.start_timestamp,
-		end_timestamp: item.end_timestamp,
+		start_timestamp: new Date(item.start_timestamp),
+		end_timestamp: new Date(item.end_timestamp),
 		value: item.value,
 	}));
 
-	// TODO: Implement actual data retrieval logic
 	return mappedData;
 };
 

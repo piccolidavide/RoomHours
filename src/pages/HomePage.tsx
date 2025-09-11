@@ -3,7 +3,27 @@ import { useAuth } from "../context/useAuth";
 import Spinner from "../utils/Spinner";
 import { retrieveUserData } from "../services/supabase";
 import type { RoomsUsageData } from "../types/Types";
-import RoomsUsagePieChart from "../utils/RoomsUagePieChart";
+import UsageDoughnutChart from "../utils/UsageDoughnutChart";
+import UsageLineChart from "../utils/UsageLineChart";
+
+const chartColors = {
+	backgroundColor: [
+		"rgba(255, 99, 132, 0.2)",
+		"rgba(54, 162, 235, 0.2)",
+		"rgba(255, 206, 86, 0.2)",
+		"rgba(75, 192, 192, 0.2)",
+		"rgba(153, 102, 255, 0.2)",
+		"rgba(255, 159, 64, 0.2)",
+	],
+	borderColor: [
+		"rgba(255, 99, 132, 1)",
+		"rgba(54, 162, 235, 1)",
+		"rgba(255, 206, 86, 1)",
+		"rgba(75, 192, 192, 1)",
+		"rgba(153, 102, 255, 1)",
+		"rgba(255, 159, 64, 1)",
+	],
+};
 
 export default function HomePage() {
 	const { user, loading } = useAuth();
@@ -12,6 +32,7 @@ export default function HomePage() {
 
 	useEffect(() => {
 		if (!user?.id || loading) return;
+		console.log("Retrieving user data...");
 
 		const fetchData = async () => {
 			try {
@@ -30,31 +51,16 @@ export default function HomePage() {
 
 	if (loading || dataLoading) return <Spinner />;
 
-	const presenceData = roomUsageData.filter(
-		(entry) => entry.value === 1 && entry.room_name,
-	);
-
-	const timePerRoom = presenceData.reduce((acc, entry) => {
-		console.log(typeof entry.start_timestamp);
-		const time =
-			(new Date(entry.end_timestamp).getTime() -
-				new Date(entry.start_timestamp).getTime()) /
-			1000; //divided by 1000 to transform ms in seconds
-		acc[entry.room_name!] = (acc[entry.room_name!] || 0) + time;
-		return acc;
-	}, {} as { [key: string]: number });
-
-	console.log("homepage");
-	console.log(timePerRoom);
-
-	return (
-		<div className="pie-chart-container">
-			{roomUsageData.length > 0 ? (
-				//TODO : implementare il grafico a torta
-				<RoomsUsagePieChart data={timePerRoom} />
-			) : (
-				<p>Nessun dato disponibile.</p>
-			)}
+	return roomUsageData.length > 0 ? (
+		<div>
+			<div className="chart-container">
+				<UsageDoughnutChart data={roomUsageData} colors={chartColors} />
+			</div>
+			<div className="chart-container">
+				<UsageLineChart data={roomUsageData} colors={chartColors} />
+			</div>
 		</div>
+	) : (
+		<p className="text-center">Nessun dato disponibile</p>
 	);
 }
