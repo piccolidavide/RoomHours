@@ -5,6 +5,7 @@ import { retrieveUserData } from "../services/supabase";
 import type { RoomsUsageData } from "../types/Types";
 import UsageDoughnutChart from "../utils/UsageDoughnutChart";
 import UsageLineChart from "../utils/UsageLineChart";
+import DatePicker from "../utils/DatePicker";
 
 const chartColors = {
 	backgroundColor: [
@@ -29,6 +30,7 @@ export default function HomePage() {
 	const { user, loading } = useAuth();
 	const [roomUsageData, setRoomUsageData] = useState<RoomsUsageData[]>([]);
 	const [dataLoading, setDataLoading] = useState(true);
+	const [selectedDate, setSelectedDate] = useState(new Date());
 
 	useEffect(() => {
 		if (!user?.id || loading) return;
@@ -51,8 +53,13 @@ export default function HomePage() {
 
 	if (loading || dataLoading) return <Spinner />;
 
+	const handleDateChange = (date: Date) => {
+		setSelectedDate(date);
+	};
+
 	return roomUsageData.length > 0 ? (
-		<div>
+		<div className="home-page-container">
+			<DatePicker dateChange={handleDateChange} />
 			<div className="chart-container">
 				<UsageDoughnutChart data={roomUsageData} colors={chartColors} />
 			</div>

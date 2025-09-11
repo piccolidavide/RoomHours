@@ -297,6 +297,18 @@ $theme-colors: (
 		}
 	}
 
+	.home-page-container{
+		margin-top: 6rem;
+	}
+
+	.date-picker {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		width: 20%;
+		margin: auto;
+	}
+
 	.chart-container {
 		display: flex;
 		justify-content: center;
@@ -308,7 +320,7 @@ $theme-colors: (
 		width: 80%;
 		box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 		margin: auto;
-		margin-top: 1rem;
+		// margin-top: 1rem;
 		
 		h5 {
 			color: mix( #000000, $body-color, 30%);
@@ -331,9 +343,9 @@ $theme-colors: (
 		}
 	}
 
-	#doughnut-card{
-		margin-top: 5rem;
-	}
+	// #doughnut-card{
+	// 	margin-top: 5rem;
+	// }
 
 
 	/* .doughnut-chart-container {

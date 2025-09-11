@@ -53,7 +53,7 @@ const UsageDoughnutChart = ({
 	};
 
 	return (
-		<Card className="chart-card" id="doughnut-card">
+		<Card className="chart-card">
 			<Card.Header as="h5">Rooms Usage</Card.Header>
 			<Card.Body>
 				{chartData.labels.length > 0 ? (
