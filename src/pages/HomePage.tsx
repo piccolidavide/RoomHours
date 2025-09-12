@@ -6,21 +6,22 @@ import type { RoomsUsageData } from "../types/Types";
 import UsageDoughnutChart from "../utils/UsageDoughnutChart";
 import UsageLineChart from "../utils/UsageLineChart";
 import DatePicker from "../utils/DatePicker";
+import { formatDate, getDateFromString } from "../utils/FormatDate";
 
 const chartColors = {
 	backgroundColor: [
 		"rgba(255, 99, 132, 0.2)",
 		"rgba(54, 162, 235, 0.2)",
 		"rgba(255, 206, 86, 0.2)",
-		"rgba(75, 192, 192, 0.2)",
+		"rgba(75, 192, 143, 0.2)",
 		"rgba(153, 102, 255, 0.2)",
 		"rgba(255, 159, 64, 0.2)",
 	],
 	borderColor: [
-		"rgba(255, 99, 132, 1)",
+		"rgba(255, 99, 122, 1)",
 		"rgba(54, 162, 235, 1)",
 		"rgba(255, 206, 86, 1)",
-		"rgba(75, 192, 192, 1)",
+		"rgba(75, 192, 143, 1)",
 		"rgba(153, 102, 255, 1)",
 		"rgba(255, 159, 64, 1)",
 	],
@@ -28,9 +29,11 @@ const chartColors = {
 
 export default function HomePage() {
 	const { user, loading } = useAuth();
-	const [roomUsageData, setRoomUsageData] = useState<RoomsUsageData[]>([]);
 	const [dataLoading, setDataLoading] = useState(true);
+	const [roomUsageData, setRoomUsageData] = useState<RoomsUsageData[]>([]);
+	const [filteredData, setFilteredData] = useState<RoomsUsageData[]>([]);
 	const [selectedDate, setSelectedDate] = useState(new Date());
+	const [distinctDates, setDistinctDates] = useState<string[]>([]);
 
 	useEffect(() => {
 		if (!user?.id || loading) return;
@@ -39,6 +42,17 @@ export default function HomePage() {
 		const fetchData = async () => {
 			try {
 				const data = await retrieveUserData(user.id);
+
+				const dates = [
+					...new Set(
+						data.map((item) => {
+							return formatDate(item.start_timestamp);
+						}),
+					),
+				];
+
+				setDistinctDates(dates);
+				setSelectedDate(getDateFromString(dates[dates.length - 1])); // Set the latest date the users has data on
 				setRoomUsageData(data);
 			} catch (error) {
 				console.error(error);
@@ -51,23 +65,38 @@ export default function HomePage() {
 		fetchData();
 	}, [user?.id, loading]);
 
+	useEffect(() => {
+		const filtered = roomUsageData.filter(
+			(item) => formatDate(item.start_timestamp) === formatDate(selectedDate),
+		);
+
+		setFilteredData(filtered);
+	}, [selectedDate, roomUsageData]);
+
 	if (loading || dataLoading) return <Spinner />;
 
 	const handleDateChange = (date: Date) => {
 		setSelectedDate(date);
 	};
 
+	// console.log("HomePage ", distinctDates);
 	return roomUsageData.length > 0 ? (
 		<div className="home-page-container">
-			<DatePicker dateChange={handleDateChange} />
+			<DatePicker
+				dateChange={handleDateChange}
+				usableDates={distinctDates}
+				selectedDate={selectedDate}
+			/>
 			<div className="chart-container">
-				<UsageDoughnutChart data={roomUsageData} colors={chartColors} />
+				<UsageDoughnutChart selectedDate={selectedDate} data={filteredData} colors={chartColors} />
 			</div>
 			<div className="chart-container">
-				<UsageLineChart data={roomUsageData} colors={chartColors} />
+				<UsageLineChart selectedDate={selectedDate} data={filteredData} colors={chartColors} />
 			</div>
 		</div>
 	) : (
-		<p className="text-center">Nessun dato disponibile</p>
+		<p className="d-flex justify-content-center align-items-center text-center">
+			Nessun dato disponibile
+		</p>
 	);
 }

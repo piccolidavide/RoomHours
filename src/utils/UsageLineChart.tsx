@@ -10,53 +10,29 @@ import {
 	Legend,
 } from "chart.js";
 import { Card } from "react-bootstrap";
-import {
-	startOfHour,
-	endOfHour,
-	addHours,
-	differenceInMinutes,
-	isWithinInterval,
-	subHours,
-} from "date-fns";
+import { startOfHour, addHours, differenceInMinutes } from "date-fns";
 import type { RoomsUsageData } from "../types/Types";
 
-ChartJS.register(
-	CategoryScale,
-	LinearScale,
-	PointElement,
-	LineElement,
-	Title,
-	Tooltip,
-	Legend,
-);
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
-const UsageLineChart = ({
-	data,
-	colors,
-}: {
+interface UsageLineChartProps {
+	selectedDate: Date;
 	data: RoomsUsageData[];
 	colors: { backgroundColor: string[]; borderColor: string[] };
-}) => {
-	const latestEntry = data[data.length - 1];
-	const last24Hours = subHours(latestEntry.end_timestamp, 24);
+}
 
-	const filteredData: RoomsUsageData[] = data.filter(
-		(entry) =>
-			entry.value === 1 &&
-			entry.room_name &&
-			entry.end_timestamp > last24Hours,
-	);
+const UsageLineChart = ({ selectedDate, data, colors }: UsageLineChartProps) => {
+	const filteredData: RoomsUsageData[] = data.filter((entry) => entry.value === 1 && entry.room_name);
 
 	const rooms: string[] = [
-		...(Array.from(
-			new Set(filteredData.map((entry: any) => entry.room_name!)),
-		) as string[]),
+		...(Array.from(new Set(filteredData.map((entry: any) => entry.room_name!))) as string[]),
 	];
 	const labels = Array.from({ length: 24 }, (_, i) => i);
 
 	const hourBuckets: { [hour: string]: { start: Date; end: Date } } = {};
 	for (let i = 0; i < 24; i++) {
-		const start = addHours(startOfHour(last24Hours), i); // adds i hours to the start of the 24 hour period
+		const start = addHours(startOfHour(selectedDate), i); // adds i hours to the start of the 24 hour period
+
 		hourBuckets[String(i)] = { start, end: addHours(start, 1) };
 	}
 
@@ -70,20 +46,12 @@ const UsageLineChart = ({
 				labels.forEach((hour, i) => {
 					// const bucket = hourBuckets[hour];
 					const { start, end } = hourBuckets[hour];
-					const overlapStart = new Date(
-						Math.max(
-							start.getTime(),
-							entry.start_timestamp.getTime(),
-						),
-					);
-					const overlapEnd = new Date(
-						Math.min(end.getTime(), entry.end_timestamp.getTime()),
-					);
+
+					const overlapStart = new Date(Math.max(start.getTime(), entry.start_timestamp.getTime()));
+					const overlapEnd = new Date(Math.min(end.getTime(), entry.end_timestamp.getTime()));
+
 					if (overlapStart < overlapEnd) {
-						hourData[i] += differenceInMinutes(
-							overlapEnd,
-							overlapStart,
-						);
+						hourData[i] += differenceInMinutes(overlapEnd, overlapStart);
 					}
 				});
 			});
@@ -99,7 +67,7 @@ const UsageLineChart = ({
 
 	return (
 		<Card className="chart-card">
-			<Card.Header as="h5">Daily rooms usage</Card.Header>
+			<Card.Header as="h5">Rooms usage timeline</Card.Header>
 			<Card.Body>
 				{roomData.length > 0 ? (
 					<Line
@@ -110,23 +78,15 @@ const UsageLineChart = ({
 						options={{
 							responsive: true,
 							maintainAspectRatio: false,
-							plugins: {
-								legend: {
-									position: "bottom" as const,
-								},
-							},
+							plugins: { legend: { position: "bottom" as const } },
 							scales: {
 								x: {
 									title: { display: true, text: "Hours" },
-									grid: {
-										color: "#333333",
-									},
+									grid: { color: "#333333" },
 								},
 								y: {
 									title: { display: true, text: "Minutes" },
-									grid: {
-										color: "#333333",
-									},
+									grid: { color: "#333333" },
 								},
 							},
 						}}

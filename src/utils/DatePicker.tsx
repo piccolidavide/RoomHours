@@ -1,46 +1,51 @@
 import { useState } from "react";
 import { Button, Form, InputGroup } from "react-bootstrap";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { formatDate, getDateFromString } from "./FormatDate";
 
-const DatePicker = ({ dateChange }: { dateChange: (date: Date) => void }) => {
-	const [selectedDate, setSelectedDate] = useState(new Date());
+interface DatePickerProps {
+	dateChange: (date: Date) => void; //function to use when date is changed
+	usableDates: string[]; //array of selectable dates in the datepicker
+	selectedDate: Date; //curret seleected date
+}
 
-	const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const newDate = new Date(event.target.value);
-		if (!isNaN(newDate.getTime())) {
-			setSelectedDate(newDate);
-			dateChange(newDate);
+const DatePicker = ({ dateChange, usableDates, selectedDate }: DatePickerProps) => {
+	const [currentSelectedDate, setCurrentSelectedDate] = useState(selectedDate);
+	usableDates.sort();
+
+	const handleDateChange = (event: React.ChangeEvent<HTMLInputElement> | "prev" | "next") => {
+		let newDate: Date;
+
+		if (typeof event === "string") {
+			const currentDateDay = formatDate(currentSelectedDate);
+
+			const index = usableDates.indexOf(currentDateDay);
+			const newIndex =
+				event === "prev" ? Math.max(0, index - 1) : Math.min(usableDates.length - 1, index + 1);
+
+			newDate = newIndex >= 0 ? getDateFromString(usableDates[newIndex]) : selectedDate;
+		} else {
+			newDate = getDateFromString(event.target.value);
 		}
-	};
 
-	const handlePrevDay = () => {
-		const prevDate = new Date(selectedDate);
-		prevDate.setDate(prevDate.getDate() - 1);
-		setSelectedDate(prevDate);
-		dateChange(prevDate);
+		setCurrentSelectedDate(newDate || selectedDate);
+		dateChange(newDate);
 	};
-
-	const handleNextDay = () => {
-		const nextDate = new Date(selectedDate);
-		nextDate.setDate(nextDate.getDate() + 1);
-		setSelectedDate(nextDate);
-		dateChange(nextDate);
-	};
-
-	const format = (date: Date) => date.toISOString().split("T")[0];
 
 	return (
 		<InputGroup className="date-picker">
-			<Button variant="secondary" onClick={handlePrevDay}>
+			<Button variant="primary" onClick={() => handleDateChange("prev")}>
 				<FaChevronLeft />
 			</Button>
 			<Form.Control
 				type="date"
-				value={format(selectedDate)}
-				onChange={handleDateChange}
-				style={{ textAlign: "center" }}
+				value={formatDate(selectedDate)}
+				onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleDateChange(event)}
+				min={usableDates[0]}
+				max={usableDates[usableDates.length - 1]}
+				// style={{ textAlign: "center" }}
 			/>
-			<Button variant="secondary" onClick={handleNextDay}>
+			<Button variant="primary" onClick={() => handleDateChange("next")}>
 				<FaChevronRight />
 			</Button>
 		</InputGroup>

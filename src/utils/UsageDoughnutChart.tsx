@@ -16,22 +16,18 @@ interface DoughnutChartData {
 	}[];
 }
 
-const UsageDoughnutChart = ({
-	data,
-	colors,
-}: {
-	data: RoomsUsageData[]; //[key: string]: number
+interface DoughnutChartProps {
+	selectedDate: Date; // date to filter the data by
+	data: RoomsUsageData[]; // data to use for the chart
 	colors: { backgroundColor: string[]; borderColor: string[] };
-}) => {
-	const presenceData = data.filter(
-		(entry) => entry.value === 1 && entry.room_name,
-	);
+}
+
+const UsageDoughnutChart = ({ selectedDate, data, colors }: DoughnutChartProps) => {
+	const presenceData = data.filter((entry) => entry.value === 1 && entry.room_name);
 
 	const timePerRoom = presenceData.reduce((acc, entry) => {
 		const time =
-			(new Date(entry.end_timestamp).getTime() -
-				new Date(entry.start_timestamp).getTime()) /
-			1000; //divided by 1000 to transform ms in seconds
+			(new Date(entry.end_timestamp).getTime() - new Date(entry.start_timestamp).getTime()) / 1000; //divided by 1000 to transform ms in seconds
 		acc[entry.room_name!] = (acc[entry.room_name!] || 0) + time;
 		return acc;
 	}, {} as { [key: string]: number });
@@ -54,7 +50,7 @@ const UsageDoughnutChart = ({
 
 	return (
 		<Card className="chart-card">
-			<Card.Header as="h5">Rooms Usage</Card.Header>
+			<Card.Header as="h5">Daily Rooms Usage</Card.Header>
 			<Card.Body>
 				{chartData.labels.length > 0 ? (
 					<Doughnut
@@ -71,9 +67,7 @@ const UsageDoughnutChart = ({
 										label: (context) => {
 											const label = context.label;
 											const value = context.parsed;
-											return `${label}: ${Math.round(
-												value / 60,
-											)} minuti`;
+											return `${label}: ${Math.round(value / 60)} minuti`;
 										},
 									},
 								},

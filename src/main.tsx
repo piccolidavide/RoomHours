@@ -18,7 +18,7 @@ createRoot(document.getElementById("root")!).render(
 		<BrowserRouter>
 			<AuthProvider>
 				<ErrorBoundary>
-					<CardNav title="Room hours application" />
+					<CardNav title="Rooms usage" />
 				</ErrorBoundary>
 				<ToastContainer
 					position="top-right"
