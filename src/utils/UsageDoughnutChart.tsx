@@ -22,13 +22,14 @@ interface DoughnutChartProps {
 	colors: { backgroundColor: string[]; borderColor: string[] };
 }
 
-const UsageDoughnutChart = ({ selectedDate, data, colors }: DoughnutChartProps) => {
+const UsageDoughnutChart = ({ data, colors }: DoughnutChartProps) => {
 	const presenceData = data.filter((entry) => entry.value === 1 && entry.room_name);
 
 	const timePerRoom = presenceData.reduce((acc, entry) => {
-		const time =
-			(new Date(entry.end_timestamp).getTime() - new Date(entry.start_timestamp).getTime()) / 1000; //divided by 1000 to transform ms in seconds
+		const time = (entry.end_timestamp.getTime() - entry.start_timestamp.getTime()) / 1000; //divided by 1000 to transform ms in seconds
+
 		acc[entry.room_name!] = (acc[entry.room_name!] || 0) + time;
+
 		return acc;
 	}, {} as { [key: string]: number });
 

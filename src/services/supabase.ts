@@ -1,7 +1,8 @@
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
-import type { RoomsData, RoomsUsageData } from "../types/Types";
+import type { Period, RoomsData, RoomsUsageData } from "../types/Types";
 import retrieveRoomUsage from "../utils/RetrieveRoomUsage";
 import { toast } from "react-toastify";
+import combinePeriodsData from "../utils/CombinePeriodsData";
 
 const getSupabaseClient = () => {
 	let instance: SupabaseClient | null = null;
@@ -18,17 +19,9 @@ const getSupabaseClient = () => {
 		return instance;
 	};
 };
-
 export const supabase = getSupabaseClient();
 
-const signUp = async (
-	username: string,
-	age: number,
-	email: string,
-	password: string,
-) => {
-	// console.log("Attempting signUp with:", { username, email, age });
-
+const signUp = async (username: string, age: number, email: string, password: string) => {
 	try {
 		// Registrazione utente con Supabase
 		const { data, error } = await supabase().auth.signUp({
@@ -56,9 +49,7 @@ const signUp = async (
 			.insert([{ id: data.user.id, username, age, email }]);
 
 		if (profileError) {
-			throw new Error(
-				`Errore durante il salvataggio del profilo: ${profileError.message}`,
-			);
+			throw new Error(`Errore durante il salvataggio del profilo: ${profileError.message}`);
 		}
 
 		return { user: data.user, success: true };
@@ -106,11 +97,9 @@ const getCurrentUser = async () => {
 };
 
 const onAuthStateChange = (callback: (user: any) => void) => {
-	const { data: authListener } = supabase().auth.onAuthStateChange(
-		(_event, session) => {
-			callback(session?.user ?? null);
-		},
-	);
+	const { data: authListener } = supabase().auth.onAuthStateChange((_event, session) => {
+		callback(session?.user ?? null);
+	});
 
 	return () => {
 		authListener.subscription.unsubscribe();
@@ -162,11 +151,26 @@ const uploadRoomData = async (
 		}
 	}
 
-	const periods = retrieveRoomUsage(user.id, roomNames, roomNamesId, data);
+	let periods = retrieveRoomUsage(user.id, roomNames, roomNamesId, data);
+	let alteredRows: string[] = [];
 
-	const { /* data: periodData, */ error: insertError } = await supabase()
-		.from("rooms_usage_periods")
-		.insert(periods);
+	const oldData = await retrieveOldUserData(user.id);
+
+	if (oldData.length > 0)
+		[alteredRows, periods] = combinePeriodsData(periods, oldData, Object.values(roomNamesId));
+
+	if (alteredRows.length > 0) {
+		const { error: deleteError } = await supabase()
+			.from("rooms_usage_periods")
+			.delete()
+			.in("id", alteredRows);
+
+		if (deleteError) {
+			return { success: false, error: deleteError.message };
+		}
+	}
+
+	const { error: insertError } = await supabase().from("rooms_usage_periods").insert(periods);
 
 	if (insertError) {
 		return { success: false, error: insertError.message };
@@ -188,6 +192,35 @@ const uploadRoomData = async (
 	// );
 
 	return { success: true };
+};
+
+const retrieveOldUserData = async (userId: string): Promise<{ rowId: string; Period: Period }[]> => {
+	const query = supabase()
+		.from("rooms_usage_periods")
+		.select("id, user_id, room_id, start_timestamp, end_timestamp, value")
+		.eq("user_id", userId)
+		.order("end_timestamp", { ascending: false });
+
+	const { data, error } = await query;
+	if (error) {
+		toast.error("Errore nel caricamento dei dati: " + error, {
+			autoClose: 3000,
+		});
+		throw error;
+	}
+
+	const mappedData: { rowId: string; Period: Period }[] = data.map((item: any) => ({
+		rowId: item.id,
+		Period: {
+			user_id: userId,
+			room_id: item.room_id,
+			start_timestamp: String(item.start_timestamp),
+			end_timestamp: String(item.end_timestamp),
+			value: item.value,
+		},
+	}));
+
+	return mappedData;
 };
 
 const retrieveUserData = async (userId: string): Promise<RoomsUsageData[]> => {
@@ -224,12 +257,4 @@ const retrieveUserData = async (userId: string): Promise<RoomsUsageData[]> => {
 };
 
 export default supabase;
-export {
-	signUp,
-	signIn,
-	signOut,
-	getCurrentUser,
-	onAuthStateChange,
-	uploadRoomData,
-	retrieveUserData,
-};
+export { signUp, signIn, signOut, getCurrentUser, onAuthStateChange, uploadRoomData, retrieveUserData };
