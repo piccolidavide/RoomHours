@@ -38,9 +38,5 @@ export default function combinePeriodsData(
 		}
 	});
 
-	// console.log("alteredRows: ", alteredRows);
-	// console.log("result: ", oldDataPeriods);
-	// console.log("result: ", oldData.concat(newData));
-
 	return [alteredRows, oldDataPeriods.concat(newData)];
 }

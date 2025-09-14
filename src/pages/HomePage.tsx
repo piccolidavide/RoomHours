@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { useAuth } from "../context/useAuth";
 import Spinner from "../utils/Spinner";
-import { retrieveUserData } from "../services/supabase";
+import { supabase, retrieveUserData } from "../services/supabase";
 import type { RoomsUsageData } from "../types/Types";
 import UsageDoughnutChart from "../utils/UsageDoughnutChart";
 import UsageLineChart from "../utils/UsageLineChart";
@@ -35,34 +35,40 @@ export default function HomePage() {
 	const [selectedDate, setSelectedDate] = useState(new Date());
 	const [distinctDates, setDistinctDates] = useState<string[]>([]);
 
+	const updateUserData = async () => {
+		setDataLoading(true);
+
+		try {
+			const data = await retrieveUserData(user.id);
+
+			const dates = [
+				...new Set(
+					data.map((item) => {
+						return formatDate(item.start_timestamp);
+					}),
+				),
+			];
+			setDistinctDates(dates);
+
+			if (dates.length > 0) {
+				setSelectedDate(getDateFromString(dates[dates.length - 1])); // Set the latest date the users has data on
+			}
+
+			// setSelectedDate(getDateFromString(dates[dates.length - 1])); // Set the latest date the users has data on
+			setRoomUsageData(data);
+		} catch (error) {
+			console.error(error);
+			setRoomUsageData([]);
+		} finally {
+			setDataLoading(false);
+		}
+	};
+
 	useEffect(() => {
 		if (!user?.id || loading) return;
 		console.log("Retrieving user data...");
 
-		const fetchData = async () => {
-			try {
-				const data = await retrieveUserData(user.id);
-
-				const dates = [
-					...new Set(
-						data.map((item) => {
-							return formatDate(item.start_timestamp);
-						}),
-					),
-				];
-
-				setDistinctDates(dates);
-				setSelectedDate(getDateFromString(dates[dates.length - 1])); // Set the latest date the users has data on
-				setRoomUsageData(data);
-			} catch (error) {
-				console.error(error);
-				setRoomUsageData([]);
-			} finally {
-				setDataLoading(false);
-			}
-		};
-
-		fetchData();
+		updateUserData();
 	}, [user?.id, loading]);
 
 	useEffect(() => {
@@ -72,6 +78,37 @@ export default function HomePage() {
 
 		setFilteredData(filtered);
 	}, [selectedDate, roomUsageData]);
+
+	// useEffect per la sottoscrizione in tempo reale
+	useEffect(() => {
+		if (!user?.id || loading) return;
+
+		// Crea un canale per la sottoscrizione
+		const channel = supabase()
+			.channel("rooms_usage_periods_changes")
+			.on(
+				"postgres_changes",
+				{
+					event: "INSERT", // Ascolta solo gli INSERT
+					schema: "public", // Assumi schema pubblico
+					table: "rooms_usage_periods",
+					filter: `user_id=eq.${user.id}`, // Filtra per user_id dell'utente autenticato
+				},
+				(_payload) => {
+					// console.log("Nuovo inserimento rilevato:", payload);
+					// Ricarica i dati quando c'è un INSERT
+					updateUserData();
+				},
+			)
+			.subscribe((status) => {
+				console.log("Stato sottoscrizione:", status);
+			});
+
+		// Cleanup: rimuovi la sottoscrizione quando il componente si smonta
+		return () => {
+			supabase().removeChannel(channel);
+		};
+	}, [user?.id, loading]);
 
 	if (loading || dataLoading) return <Spinner />;
 
