@@ -31,11 +31,9 @@ const CardNavButton: React.FC<CardNavButtonProps> = ({ username }) => {
 			>
 				Impostazioni
 			</NavDropdown.Item>
-			<NavDropdown.Item onClick={handleUploadData}>
-				Carica CSV
-			</NavDropdown.Item>
+			<NavDropdown.Item onClick={handleUploadData}>Carica CSV</NavDropdown.Item>
 			<NavDropdown.Divider />
-			<NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>
+			<NavDropdown.Item onClick={() => handleLogout(username)}>Logout</NavDropdown.Item>
 		</NavDropdown>
 	);
 };

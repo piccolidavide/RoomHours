@@ -2,15 +2,13 @@ import { Button } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { signOut } from "../services/supabase";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/useAuth";
 
-const LogoutToast = () => {
+const LogoutToast = ({ username }: { username: string | null }) => {
 	const navigate = useNavigate();
-	const { user } = useAuth();
 
 	return (
 		<div className="w-100">
-			<p>{user.user_metadata.username} sei sicuro di volere uscire?</p>
+			<p>{username ?? "Utente"} sei sicuro di volere uscire?</p>
 			<div className=" d-flex justify-content-end gap-2">
 				<Button
 					variant="secondary"
@@ -26,11 +24,11 @@ const LogoutToast = () => {
 					size="sm"
 					onClick={async () => {
 						try {
-							await signOut();
-
 							toast.dismiss();
 
 							toast.success("Logout effettuato con successo!");
+
+							await signOut();
 
 							navigate("/");
 						} catch (error) {
@@ -45,9 +43,9 @@ const LogoutToast = () => {
 		</div>
 	);
 };
-const handleLogout = () => {
+const handleLogout = (username: string | null) => {
 	// Toast di conferma logout
-	toast(<LogoutToast />, {
+	toast(<LogoutToast username={username} />, {
 		position: "top-center",
 		autoClose: false,
 		closeOnClick: false,

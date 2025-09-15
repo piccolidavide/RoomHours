@@ -1,12 +1,14 @@
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../context/useAuth";
 import Spinner from "../utils/Spinner";
-import { supabase, retrieveUserData } from "../services/supabase";
+import supabase, { retrieveUserData, subscribeToRoomUsage } from "../services/supabase";
 import type { RoomsUsageData } from "../types/Types";
 import UsageDoughnutChart from "../utils/UsageDoughnutChart";
 import UsageLineChart from "../utils/UsageLineChart";
 import DatePicker from "../utils/DatePicker";
 import { formatDate, getDateFromString } from "../utils/FormatDate";
+import UsageBarChart from "../utils/UsageBarChart";
+import UsageGanttChart from "../utils/UsageGanttChart";
 
 const chartColors = {
 	backgroundColor: [
@@ -36,6 +38,7 @@ export default function HomePage() {
 	const [distinctDates, setDistinctDates] = useState<string[]>([]);
 
 	const updateUserData = async () => {
+		console.log("Updating user data...");
 		setDataLoading(true);
 
 		try {
@@ -79,36 +82,48 @@ export default function HomePage() {
 		setFilteredData(filtered);
 	}, [selectedDate, roomUsageData]);
 
-	// useEffect per la sottoscrizione in tempo reale
 	useEffect(() => {
-		if (!user?.id || loading) return;
+		const subscribe = async () => {
+			if (!user?.id || loading) return;
 
-		// Crea un canale per la sottoscrizione
-		const channel = supabase()
-			.channel("rooms_usage_periods_changes")
-			.on(
-				"postgres_changes",
-				{
-					event: "INSERT", // Ascolta solo gli INSERT
-					schema: "public", // Assumi schema pubblico
-					table: "rooms_usage_periods",
-					filter: `user_id=eq.${user.id}`, // Filtra per user_id dell'utente autenticato
-				},
-				(_payload) => {
-					// console.log("Nuovo inserimento rilevato:", payload);
-					// Ricarica i dati quando c'è un INSERT
-					updateUserData();
-				},
-			)
-			.subscribe((status) => {
-				console.log("Stato sottoscrizione:", status);
-			});
+			const unsubscribe = await subscribeToRoomUsage(user.id, updateUserData);
 
-		// Cleanup: rimuovi la sottoscrizione quando il componente si smonta
-		return () => {
-			supabase().removeChannel(channel);
+			return unsubscribe;
 		};
+
+		subscribe();
 	}, [user?.id, loading]);
+
+	// useEffect per la sottoscrizione in tempo reale
+	// useEffect(() => {
+	// 	if (!user?.id || loading) return;
+
+	// 	// Crea un canale per la sottoscrizione
+	// 	const channel = supabase()
+	// 		.channel("rooms_usage_periods_changes")
+	// 		.on(
+	// 			"postgres_changes",
+	// 			{
+	// 				event: "INSERT", // Ascolta solo gli INSERT
+	// 				schema: "public", // Assumi schema pubblico
+	// 				table: "rooms_usage_periods",
+	// 				// filter: `user_id=eq.${user.id}`, // Filtra per user_id dell'utente autenticato
+	// 			},
+	// 			(_payload) => {
+	// 				// Ricarica i dati quando c'è un INSERT
+	// 				// console.log("insert rilevato");
+	// 				updateUserData();
+	// 			},
+	// 		)
+	// 		.subscribe((status) => {
+	// 			console.log("Stato sottoscrizione:", status);
+	// 		});
+
+	// 	// Cleanup: rimuovi la sottoscrizione quando il componente si smonta
+	// 	return () => {
+	// 		supabase().removeChannel(channel);
+	// 	};
+	// }, [user?.id, loading]);
 
 	if (loading || dataLoading) return <Spinner />;
 
@@ -126,6 +141,9 @@ export default function HomePage() {
 			/>
 			<div className="chart-container">
 				<UsageDoughnutChart selectedDate={selectedDate} data={filteredData} colors={chartColors} />
+			</div>
+			<div className="chart-container">
+				<UsageBarChart selectedDate={selectedDate} data={filteredData} colors={chartColors} />
 			</div>
 			<div className="chart-container">
 				<UsageLineChart selectedDate={selectedDate} data={filteredData} colors={chartColors} />

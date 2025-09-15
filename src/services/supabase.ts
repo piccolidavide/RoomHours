@@ -256,5 +256,46 @@ const retrieveUserData = async (userId: string): Promise<RoomsUsageData[]> => {
 	return mappedData;
 };
 
+const subscribeToRoomUsage = async (userId: string, onInsert: () => void): Promise<() => void> => {
+	console.log("Sottoscrizione in corso..."); // Crea un canale per la sottoscrizione
+
+	const channel = supabase()
+		.channel("rooms_usage_periods_changes")
+		.on(
+			"postgres_changes",
+			{
+				event: "INSERT", // Ascolta solo gli INSERT
+				schema: "public", // Assumi schema pubblico
+				table: "rooms_usage_periods",
+				filter: `user_id=eq.${userId}`, // Filtra per user_id dell'utente autenticato
+			},
+			(_payload) => {
+				// Ricarica i dati quando c'è un INSERT
+				// console.log("insert");
+				onInsert();
+			},
+		)
+		.subscribe((status) => {
+			console.log("Stato sottoscrizione:", status);
+
+			if (status === "CLOSED" || status === "CHANNEL_ERROR")
+				console.error("Sottoscrizione chiusa o con errore.");
+		});
+
+	// Cleanup: rimuovi la sottoscrizione quando il componente si smonta
+	return () => {
+		supabase().removeChannel(channel);
+	};
+};
+
 export default supabase;
-export { signUp, signIn, signOut, getCurrentUser, onAuthStateChange, uploadRoomData, retrieveUserData };
+export {
+	signUp,
+	signIn,
+	signOut,
+	getCurrentUser,
+	onAuthStateChange,
+	uploadRoomData,
+	retrieveUserData,
+	subscribeToRoomUsage,
+};
