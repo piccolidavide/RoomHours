@@ -9,6 +9,7 @@ import DatePicker from "../utils/DatePicker";
 import { formatDate, getDateFromString } from "../utils/FormatDate";
 import UsageBarChart from "../utils/UsageBarChart";
 import UsageGanttChart from "../utils/UsageGanttChart";
+import UsageGroupedBarChart from "../utils/UsageGroupedBarChart";
 
 const chartColors = {
 	backgroundColor: [
@@ -147,6 +148,17 @@ export default function HomePage() {
 			</div>
 			<div className="chart-container">
 				<UsageLineChart selectedDate={selectedDate} data={filteredData} colors={chartColors} />
+			</div>
+			<div className="text-center mt-5 text-secondary">
+				<h2>------------ 7 days recap ------------</h2>
+			</div>
+			<div className="chart-container">
+				<UsageGroupedBarChart
+					selectedDate={selectedDate}
+					roomsUsageData={roomUsageData}
+					colors={chartColors}
+					type="week"
+				/>
 			</div>
 		</div>
 	) : (
