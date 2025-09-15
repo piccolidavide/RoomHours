@@ -224,25 +224,39 @@ const retrieveOldUserData = async (userId: string): Promise<{ rowId: string; Per
 };
 
 const retrieveUserData = async (userId: string): Promise<RoomsUsageData[]> => {
-	const query = supabase()
-		.from("rooms_usage_periods")
-		.select(
-			`start_timestamp,
-			end_timestamp,
-			value,
-			rooms(name),
-			users(username)`,
-		)
-		.eq("user_id", userId)
-		.order("end_timestamp", { ascending: true });
+	const maxRows = 1000;
+	let data: any = [];
+	let curStart = 0;
+	let hasMore = true;
 
-	const { data, error } = await query;
-	if (error) {
-		toast.error("Errore nel caricamento dei dati: " + error, {
-			autoClose: 3000,
-		});
-		throw error;
+	while (hasMore) {
+		const query = supabase()
+			.from("rooms_usage_periods")
+			.select(
+				`start_timestamp,
+				end_timestamp,
+				value,
+				rooms(name),
+				users(username)`,
+			)
+			.eq("user_id", userId)
+			.order("end_timestamp", { ascending: true })
+			.range(curStart * maxRows, (curStart + 1) * maxRows - 1);
+
+		const { data: newData, error } = await query;
+		if (error) {
+			toast.error("Errore nel caricamento dei dati: " + error, {
+				autoClose: 3000,
+			});
+			throw error;
+		}
+
+		data = [...data, ...newData];
+		hasMore = newData.length === maxRows;
+		curStart++;
 	}
+
+	console.log("Data: ", data.length);
 
 	const mappedData: RoomsUsageData[] = data.map((item: any) => ({
 		user_id: userId,

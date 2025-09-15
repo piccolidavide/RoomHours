@@ -150,7 +150,7 @@ export default function HomePage() {
 				<UsageLineChart selectedDate={selectedDate} data={filteredData} colors={chartColors} />
 			</div>
 			<div className="text-center mt-5 text-secondary">
-				<h2>------------ 7 days recap ------------</h2>
+				<h2 className="divider gradient">7 days recap</h2>
 			</div>
 			<div className="chart-container">
 				<UsageGroupedBarChart
@@ -158,6 +158,17 @@ export default function HomePage() {
 					roomsUsageData={roomUsageData}
 					colors={chartColors}
 					type="week"
+				/>
+			</div>
+			<div className="text-center mt-5 text-secondary">
+				<h2 className="divider gradient">4 weeks recap</h2>
+			</div>
+			<div className="chart-container">
+				<UsageGroupedBarChart
+					selectedDate={selectedDate}
+					roomsUsageData={roomUsageData}
+					colors={chartColors}
+					type="month"
 				/>
 			</div>
 		</div>

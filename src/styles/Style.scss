@@ -355,6 +355,40 @@ $theme-colors: (
 		}
 	}
 
+	.divider {
+		display: flex;
+		align-items: center;
+		text-align: center;
+		margin: 1em 0;
+		line-height: 2em;
+		color: $primary;
+		position: relative;
+		
+		// Pseudo-elementi per le linee gradienti
+		&:before,
+		&:after {
+			content: "";
+			flex: 1;
+			height: 1px; // Linea sottile come nell'esempio
+			background: linear-gradient(to right,
+					transparent,
+					gray 50%,
+					transparent); // Gradiente per un effetto sfumato
+			margin: 0 10px; // Spazio tra il testo e le linee
+		}
+
+		&.gradient {
+			font-weight: bold; // Opzionale, per un testo più marcato
+			text-transform: uppercase; // Opzionale, per replicare uno stile moderno
+			text-shadow: 
+				-.5px -.5px 0 #ffffff,  
+				.5px -.5px 0 #ffffff,
+				-.5px  .5px 0 #ffffff,
+				.5px  .5px 0 #ffffff;
+		}
+
+	}
+	
 	@media (max-width: 600px) { 
 		.card-nav-container.navbar.navbar-expand-lg,
 		.card-nav-container.navbar.navbar-expand-lg.navbar-dark {
@@ -364,85 +398,4 @@ $theme-colors: (
 			}
 		}
 	}
-
-	// #doughnut-card{
-	// 	margin-top: 5rem;
-	// }
-
-
-	/* .doughnut-chart-container {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		margin-top: 1rem;
-	}
-
-	.doughnut-chart-card{
-		width: 80%;
-		box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-		margin: auto;
-		margin-top: 5rem;
-		
-		h5 {
-			color : mix( #000000, $body-color, 30%);
-		}
-		
-		.card-body{
-			height: 30rem;
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			padding: 1rem;
-
-			// canvas{
-			// 	width: 100% !important;
-			// 	height: 100% !important;
-			// 	max-width: 100% !important;
-			// 	max-height: 100% !important;
-			// 	min-width: 100% !important;
-			// 	min-height: 100% !important;
-			// 	object-fit: contain;
-			// }
-			
-			p{
-				text-align: center;
-				font-weight: bold;
-				font-size: 1.2rem;
-				margin-top: 1rem;
-				color: $body-color;
-			}
-		}
-	}
-
-	.line-chart-container {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		margin-top: 4rem;
-	}
-	
-	.line-chart-card{
-		width: 80%;
-		height: 30rem;
-		box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-		
-		h5 {
-			color : mix( #000000, $body-color, 30%);
-		}	
-
-		.card-body{
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			padding: 1rem;
-
-			p{
-				text-align: center;
-				font-weight: bold;
-				font-size: 1.2rem;
-				margin-top: 1rem;
-				color: $body-color;
-			}
-		}
-	} */
 }
