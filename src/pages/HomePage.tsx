@@ -39,7 +39,6 @@ export default function HomePage() {
 	const [distinctDates, setDistinctDates] = useState<string[]>([]);
 
 	const updateUserData = async () => {
-		console.log("Updating user data...");
 		setDataLoading(true);
 
 		try {
@@ -70,7 +69,7 @@ export default function HomePage() {
 
 	useEffect(() => {
 		if (!user?.id || loading) return;
-		console.log("Retrieving user data...");
+		// console.log("Retrieving user data...");
 
 		updateUserData();
 	}, [user?.id, loading]);
@@ -95,37 +94,6 @@ export default function HomePage() {
 		subscribe();
 	}, [user?.id, loading]);
 
-	// useEffect per la sottoscrizione in tempo reale
-	// useEffect(() => {
-	// 	if (!user?.id || loading) return;
-
-	// 	// Crea un canale per la sottoscrizione
-	// 	const channel = supabase()
-	// 		.channel("rooms_usage_periods_changes")
-	// 		.on(
-	// 			"postgres_changes",
-	// 			{
-	// 				event: "INSERT", // Ascolta solo gli INSERT
-	// 				schema: "public", // Assumi schema pubblico
-	// 				table: "rooms_usage_periods",
-	// 				// filter: `user_id=eq.${user.id}`, // Filtra per user_id dell'utente autenticato
-	// 			},
-	// 			(_payload) => {
-	// 				// Ricarica i dati quando c'è un INSERT
-	// 				// console.log("insert rilevato");
-	// 				updateUserData();
-	// 			},
-	// 		)
-	// 		.subscribe((status) => {
-	// 			console.log("Stato sottoscrizione:", status);
-	// 		});
-
-	// 	// Cleanup: rimuovi la sottoscrizione quando il componente si smonta
-	// 	return () => {
-	// 		supabase().removeChannel(channel);
-	// 	};
-	// }, [user?.id, loading]);
-
 	if (loading || dataLoading) return <Spinner />;
 
 	const handleDateChange = (date: Date) => {
@@ -140,6 +108,9 @@ export default function HomePage() {
 				usableDates={distinctDates}
 				selectedDate={selectedDate}
 			/>
+			<div className="text-center text-secondary">
+				<h2 className="divider gradient">Daily recap</h2>
+			</div>
 			<div className="chart-container">
 				<UsageDoughnutChart selectedDate={selectedDate} data={filteredData} colors={chartColors} />
 			</div>
@@ -160,7 +131,7 @@ export default function HomePage() {
 					type="week"
 				/>
 			</div>
-			<div className="text-center mt-5 text-secondary">
+			<div className="text-center text-secondary">
 				<h2 className="divider gradient">4 weeks recap</h2>
 			</div>
 			<div className="chart-container">

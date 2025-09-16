@@ -256,7 +256,7 @@ const retrieveUserData = async (userId: string): Promise<RoomsUsageData[]> => {
 		curStart++;
 	}
 
-	console.log("Data: ", data.length);
+	// console.log("Data: ", data.length);
 
 	const mappedData: RoomsUsageData[] = data.map((item: any) => ({
 		user_id: userId,
@@ -271,7 +271,7 @@ const retrieveUserData = async (userId: string): Promise<RoomsUsageData[]> => {
 };
 
 const subscribeToRoomUsage = async (userId: string, onInsert: () => void): Promise<() => void> => {
-	console.log("Sottoscrizione in corso..."); // Crea un canale per la sottoscrizione
+	// console.log("Sottoscrizione in corso..."); // Crea un canale per la sottoscrizione
 
 	const channel = supabase()
 		.channel("rooms_usage_periods_changes")
@@ -285,12 +285,11 @@ const subscribeToRoomUsage = async (userId: string, onInsert: () => void): Promi
 			},
 			(_payload) => {
 				// Ricarica i dati quando c'è un INSERT
-				// console.log("insert");
 				onInsert();
 			},
 		)
 		.subscribe((status) => {
-			console.log("Stato sottoscrizione:", status);
+			// console.log("Stato sottoscrizione:", status);
 
 			if (status === "CLOSED" || status === "CHANNEL_ERROR")
 				console.error("Sottoscrizione chiusa o con errore.");

@@ -298,21 +298,30 @@ $theme-colors: (
 	}
 
 	.home-page-container{
-		margin-top: 6rem;
+		margin-top: 7rem;
 	}
 
 	.date-picker {
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		width: min(18rem, 90%);
-		min-width: 10rem;
-		max-width: 20rem;
-		margin: auto;
+		// width: min(18rem, 90%);
+		// min-width: 10rem;
+		// max-width: 20rem;
+		width : min(38rem, 80%);
+		margin-left: auto;
+		margin-right: auto;
+		// margin: auto;
+		position: sticky;
+		top : 0;
+		// left: 50%;
+		// transform: translateX(-50%);
+		z-index: 1001;
 
 		.form-control{
 			text-align: center;
 			-webkit-text-fill-color: $body-color;
+			background-color: $navbar-bg;
 			border: 0px solid transparent; // O usa border-color: $primary se vuoi un bordo
 
 			&:focus{
