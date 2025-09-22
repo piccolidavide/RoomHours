@@ -1,15 +1,14 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/useAuth";
-import Spinner from "../utils/Spinner";
-import supabase, { retrieveUserData, subscribeToRoomUsage } from "../services/supabase";
+import Spinner from "../utils/gui_add_ons/Spinner";
+import { retrieveUserData, subscribeToRoomUsage } from "../services/supabase";
 import type { RoomsUsageData } from "../types/Types";
-import UsageDoughnutChart from "../utils/UsageDoughnutChart";
-import UsageLineChart from "../utils/UsageLineChart";
-import DatePicker from "../utils/DatePicker";
+import UsageDoughnutChart from "../utils/usage_charts/UsageDoughnutChart";
+import UsageLineChart from "../utils/usage_charts/UsageLineChart";
+import DatePicker from "../utils/gui_add_ons/DatePicker";
 import { formatDate, getDateFromString } from "../utils/FormatDate";
-import UsageBarChart from "../utils/UsageBarChart";
-import UsageGanttChart from "../utils/UsageGanttChart";
-import UsageGroupedBarChart from "../utils/UsageGroupedBarChart";
+import UsageBarChart from "../utils/usage_charts/UsageBarChart";
+import UsageGroupedBarChart from "../utils/usage_charts/UsageGroupedBarChart";
 
 const chartColors = {
 	backgroundColor: [
@@ -57,7 +56,6 @@ export default function HomePage() {
 				setSelectedDate(getDateFromString(dates[dates.length - 1])); // Set the latest date the users has data on
 			}
 
-			// setSelectedDate(getDateFromString(dates[dates.length - 1])); // Set the latest date the users has data on
 			setRoomUsageData(data);
 		} catch (error) {
 			console.error(error);

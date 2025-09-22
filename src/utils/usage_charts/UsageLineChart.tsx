@@ -11,7 +11,7 @@ import {
 } from "chart.js";
 import { Card } from "react-bootstrap";
 import { startOfHour, addHours, differenceInMinutes } from "date-fns";
-import type { RoomsUsageData } from "../types/Types";
+import type { RoomsUsageData } from "../../types/Types";
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
@@ -78,7 +78,18 @@ const UsageLineChart = ({ selectedDate, data, colors }: UsageLineChartProps) => 
 						options={{
 							responsive: true,
 							maintainAspectRatio: false,
-							plugins: { legend: { position: "bottom" as const } },
+							plugins: {
+								legend: { position: "bottom" as const },
+								tooltip: {
+									callbacks: {
+										title: (context) => `${context[0].label}:00`,
+										label: (context) => {
+											const value = context.parsed.y;
+											return `${context.dataset.label}: ${Math.round(value)} min`;
+										},
+									},
+								},
+							},
 							scales: {
 								x: {
 									title: { display: true, text: "Hours" },

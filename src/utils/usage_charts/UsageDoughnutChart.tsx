@@ -1,7 +1,7 @@
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Card } from "react-bootstrap";
-import type { RoomsUsageData } from "../types/Types";
+import type { RoomsUsageData } from "../../types/Types";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -66,9 +66,9 @@ const UsageDoughnutChart = ({ data, colors }: DoughnutChartProps) => {
 								tooltip: {
 									callbacks: {
 										label: (context) => {
-											const label = context.label;
+											// const label = context.label;
 											const value = context.parsed;
-											return `${label}: ${Math.round(value / 60)} minuti`;
+											return `${Math.round(value / 60)} minuti`;
 										},
 									},
 								},

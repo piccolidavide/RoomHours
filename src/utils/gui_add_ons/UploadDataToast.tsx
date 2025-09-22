@@ -2,8 +2,8 @@ import { useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { Button, Form } from "react-bootstrap";
 import Papa from "papaparse";
-import type { RoomsData } from "../types/Types";
-import { uploadRoomData } from "../services/supabase";
+import type { RoomsData } from "../../types/Types";
+import { uploadRoomData } from "../../services/supabase";
 
 const UploadToast = () => {
 	const fileInputRef = useRef<HTMLInputElement>(null);
@@ -19,11 +19,7 @@ const UploadToast = () => {
 				skipEmptyLines: true,
 				dynamicTyping: true,
 				complete: (results) => {
-					handleCSVResults(
-						results.data as RoomsData[],
-						results.errors,
-						results.meta,
-					);
+					handleCSVResults(results.data as RoomsData[], results.errors, results.meta);
 				},
 				error: (err) => {
 					toast.error("Errore nel parsing del file CSV.");
@@ -31,18 +27,41 @@ const UploadToast = () => {
 				},
 			});
 		} else if (file && file.name.endsWith(".json")) {
-			// const reader = new FileReader();
+			const reader = new FileReader();
+			reader.onload = (e) => {
+				const jsonData = JSON.parse(e.target?.result as string);
+				if (!Array.isArray(jsonData) || jsonData.length === 0) {
+					toast.error("Il file JSON non contiene dati validi.");
+					return;
+				}
+
+				const firstEntry = jsonData[0];
+				const roomNames = Object.keys(firstEntry.Rooms || {}) as string[];
+
+				const data = jsonData.map((entry: any) => {
+					const newEntry: any = { Timestamp: entry.Timestamp };
+					roomNames.forEach((room) => {
+						newEntry[room] = entry.Rooms[room] || 0;
+					});
+					return newEntry;
+				});
+
+				setRooms(roomNames);
+				setParsedData(data);
+			};
+
+			reader.onerror = () => {
+				toast.error("Errore nel parsing del file JSON.");
+				return;
+			};
+			reader.readAsText(file);
 		} else {
 			toast.error("Formato file non valido. Carica un file CSV o JSON.");
 			return;
 		}
 	};
 
-	const handleCSVResults = (
-		data: RoomsData[],
-		errors: Papa.ParseError[],
-		_meta?: Papa.ParseMeta,
-	) => {
+	const handleCSVResults = (data: RoomsData[], errors: Papa.ParseError[], _meta?: Papa.ParseMeta) => {
 		if (errors.length) {
 			toast.error("Errore nel parsing del file CSV.");
 			console.error("CSV Parsing Errors:", errors);
@@ -58,7 +77,7 @@ const UploadToast = () => {
 			.map((name) => name.trim());
 
 		if (roomNames.length === 0) {
-			toast.error("Il file CSV non contiene nomi di aule validi.");
+			toast.error("Il file CSV non contiene nomi di stanze validi.");
 			return;
 		}
 		if (!data[0].Timestamp) {
@@ -68,14 +87,9 @@ const UploadToast = () => {
 
 		setRooms(roomNames);
 		setParsedData(data);
-
-		// console.log("Parsed Rooms:", roomNames);
-		// console.log("Parsed Data:", data[0]);
 	};
 
-	const handleConfirmClick = (
-		_e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-	) => {
+	const handleConfirmClick = (_e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 		// Optionally, you can validate if a file is selected before confirming
 		const file = fileInputRef.current?.files?.[0];
 		if (!file) {
@@ -84,10 +98,6 @@ const UploadToast = () => {
 		}
 		// Close the toast after confirmation
 		toast.dismiss();
-		toast.success("File caricato con successo!");
-
-		// console.log("Uploading data for rooms:", rooms);
-		// console.log("Data sample:", parsedData[0]);
 
 		uploadRoomData(rooms, parsedData).then(({ success, error }) => {
 			if (success) {
@@ -103,25 +113,12 @@ const UploadToast = () => {
 	return (
 		<div className="w-100">
 			<p>Carica il tuo file CSV o JSON:</p>
-			<Form.Control
-				type="file"
-				ref={fileInputRef}
-				accept=".csv, .json"
-				onChange={handleFileChange}
-			/>
+			<Form.Control type="file" ref={fileInputRef} accept=".csv, .json" onChange={handleFileChange} />
 			<div className="d-flex justify-content-between gap-2 mt-3">
-				<Button
-					variant="secondary"
-					className="toast-cancel-button"
-					onClick={() => toast.dismiss()}
-				>
+				<Button variant="secondary" className="toast-cancel-button" onClick={() => toast.dismiss()}>
 					Annulla
 				</Button>
-				<Button
-					variant="secondary"
-					className="toast-confirm-button"
-					onClick={handleConfirmClick}
-				>
+				<Button variant="secondary" className="toast-confirm-button" onClick={handleConfirmClick}>
 					Conferma
 				</Button>
 			</div>

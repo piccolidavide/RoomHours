@@ -3,9 +3,9 @@ import { useLocation } from "react-router-dom";
 import { Container, Navbar } from "react-bootstrap";
 import CardNavButton from "./CardNavButton";
 import CardNavDropdown from "./CardNavDropdown";
-import { useAuth } from "../context/useAuth";
-import Logo from "../assets/logo.svg";
-import Spinner from "../utils/Spinner";
+import { useAuth } from "../../context/useAuth";
+import Logo from "../../assets/logo.svg";
+import Spinner from "../../utils/gui_add_ons/Spinner";
 
 interface CardNavProps {
 	title: string;
@@ -16,10 +16,7 @@ interface CardNavButtonConfig {
 	label: string;
 }
 
-const getNavButtonConfig = (
-	isLoginPage: boolean,
-	isSignupPage: boolean,
-): CardNavButtonConfig | null => {
+const getNavButtonConfig = (isLoginPage: boolean, isSignupPage: boolean): CardNavButtonConfig | null => {
 	if (isLoginPage) return { to: "/SignupPage", label: "Registrati" };
 	if (isSignupPage) return { to: "/", label: "Login" };
 	return null;
@@ -50,16 +47,9 @@ const CardNav: React.FC<CardNavProps> = ({ title }) => {
 					</Navbar.Brand>
 				</div>
 				<div className="cta-button-container">
-					{isHomePage && (
-						<CardNavDropdown
-							username={user?.user_metadata.username ?? "Utente"}
-						/>
-					)}
+					{isHomePage && <CardNavDropdown username={user?.user_metadata.username ?? "Utente"} />}
 					{navButtonConfig && (
-						<CardNavButton
-							to={navButtonConfig.to}
-							label={navButtonConfig.label}
-						/>
+						<CardNavButton to={navButtonConfig.to} label={navButtonConfig.label} />
 					)}
 				</div>
 			</Container>

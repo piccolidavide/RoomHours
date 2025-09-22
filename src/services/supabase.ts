@@ -3,6 +3,7 @@ import type { Period, RoomsData, RoomsUsageData } from "../types/Types";
 import retrieveRoomUsage from "../utils/RetrieveRoomUsage";
 import { toast } from "react-toastify";
 import combinePeriodsData from "../utils/CombinePeriodsData";
+import { max } from "date-fns";
 
 const getSupabaseClient = () => {
 	let instance: SupabaseClient | null = null;
@@ -156,8 +157,12 @@ const uploadRoomData = async (
 
 	const oldData = await retrieveOldUserData(user.id);
 
+	console.log(oldData.length);
+
 	if (oldData.length > 0)
 		[alteredRows, periods] = combinePeriodsData(periods, oldData, Object.values(roomNamesId));
+
+	console.log(periods.length);
 
 	if (alteredRows.length > 0) {
 		const { error: deleteError } = await supabase()
@@ -195,18 +200,30 @@ const uploadRoomData = async (
 };
 
 const retrieveOldUserData = async (userId: string): Promise<{ rowId: string; Period: Period }[]> => {
-	const query = supabase()
-		.from("rooms_usage_periods")
-		.select("id, user_id, room_id, start_timestamp, end_timestamp, value")
-		.eq("user_id", userId)
-		.order("end_timestamp", { ascending: false });
+	const maxRows = 1000;
+	let data: any = [];
+	let curStart = 0;
+	let hasMore = true;
 
-	const { data, error } = await query;
-	if (error) {
-		toast.error("Errore nel caricamento dei dati: " + error, {
-			autoClose: 3000,
-		});
-		throw error;
+	while (hasMore) {
+		const query = supabase()
+			.from("rooms_usage_periods")
+			.select("id, user_id, room_id, start_timestamp, end_timestamp, value")
+			.eq("user_id", userId)
+			.order("end_timestamp", { ascending: false })
+			.range(curStart * maxRows, (curStart + 1) * maxRows - 1);
+
+		const { data: newData, error } = await query;
+		if (error) {
+			toast.error("Errore nel caricamento dei dati: " + error, {
+				autoClose: 3000,
+			});
+			throw error;
+		}
+
+		data = [...data, ...newData];
+		hasMore = newData.length === maxRows;
+		curStart++;
 	}
 
 	const mappedData: { rowId: string; Period: Period }[] = data.map((item: any) => ({

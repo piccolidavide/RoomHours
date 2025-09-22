@@ -2,7 +2,7 @@ import annotationPlugin from "chartjs-plugin-annotation";
 import { Bar } from "react-chartjs-2";
 import { Chart as ChartJS, BarElement, CategoryScale, LinearScale, Tooltip, Legend } from "chart.js";
 import { Card } from "react-bootstrap";
-import type { RoomsUsageData } from "../types/Types";
+import type { RoomsUsageData } from "../../types/Types";
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend, annotationPlugin);
 
@@ -68,9 +68,9 @@ const UsageBarChart = ({ data, colors }: BarChartProps) => {
 								tooltip: {
 									callbacks: {
 										label: (context) => {
-											const label = context.label;
+											// const label = context.label;
 											const value = context.parsed.x;
-											return `${label}: ${Math.round(value / 60)} minuti`;
+											return `${Math.round(value / 60)} minuti`;
 										},
 									},
 								},

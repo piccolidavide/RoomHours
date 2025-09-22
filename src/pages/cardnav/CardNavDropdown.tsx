@@ -1,7 +1,7 @@
 import { NavDropdown } from "react-bootstrap";
 import { FaUserCircle } from "react-icons/fa";
-import handleUploadData from "../utils/UploadDataToast";
-import handleLogout from "../utils/LogoutToast";
+import handleUploadData from "../../utils/gui_add_ons/UploadDataToast";
+import handleLogout from "../../utils/gui_add_ons/LogoutToast";
 import { toast } from "react-toastify";
 
 interface CardNavButtonProps {
@@ -29,9 +29,9 @@ const CardNavButton: React.FC<CardNavButtonProps> = ({ username }) => {
 					})
 				}
 			>
-				Impostazioni
+				Settings
 			</NavDropdown.Item>
-			<NavDropdown.Item onClick={handleUploadData}>Carica CSV</NavDropdown.Item>
+			<NavDropdown.Item onClick={handleUploadData}>Upload</NavDropdown.Item>
 			<NavDropdown.Divider />
 			<NavDropdown.Item onClick={() => handleLogout(username)}>Logout</NavDropdown.Item>
 		</NavDropdown>

@@ -1,6 +1,6 @@
 import { Button } from "react-bootstrap";
 import { toast } from "react-toastify";
-import { signOut } from "../services/supabase";
+import { signOut } from "../../services/supabase";
 import { useNavigate } from "react-router-dom";
 
 const LogoutToast = ({ username }: { username: string | null }) => {

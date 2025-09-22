@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button, Form, InputGroup } from "react-bootstrap";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import { formatDate, getDateFromString } from "./FormatDate";
+import { formatDate, getDateFromString } from "../FormatDate";
 
 interface DatePickerProps {
 	dateChange: (date: Date) => void; //function to use when date is changed
@@ -43,7 +43,6 @@ const DatePicker = ({ dateChange, usableDates, selectedDate }: DatePickerProps) 
 				onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleDateChange(event)}
 				min={usableDates[0]}
 				max={usableDates[usableDates.length - 1]}
-				// style={{ textAlign: "center" }}
 			/>
 			<Button variant="primary" onClick={() => handleDateChange("next")}>
 				<FaChevronRight />

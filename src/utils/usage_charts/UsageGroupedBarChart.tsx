@@ -1,7 +1,7 @@
 import { Bar } from "react-chartjs-2";
 import { Chart as ChartJS, BarElement, CategoryScale, LinearScale, Tooltip, Legend } from "chart.js";
 import { Card } from "react-bootstrap";
-import type { RoomsUsageData } from "../types/Types";
+import type { RoomsUsageData } from "../../types/Types";
 import { addDays, startOfWeek } from "date-fns";
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
@@ -157,10 +157,20 @@ const UsageGroupedBarChart = ({ selectedDate, roomsUsageData, colors, type }: Us
 								beginAtZero: true,
 								title: {
 									display: true,
-									text: "Minutes",
+									text: type === "week" ? "Minutes" : "Hours",
 								},
 								ticks: {
-									callback: (value) => `${Math.round(Number(value) / 60)} min`,
+									stepSize: type === "week" ? 10 * 60 : 60 * 60, //every 10 minutes for week, every hour for month
+									callback: (value) => {
+										value = Math.round(Number(value) / 60); // convert to minutes for easier reading
+
+										if (value >= 60) {
+											const hours = Math.floor(value / 60);
+											return `${hours} h `;
+										}
+
+										return `${value} min`;
+									},
 								},
 							},
 						},
@@ -171,13 +181,15 @@ const UsageGroupedBarChart = ({ selectedDate, roomsUsageData, colors, type }: Us
 							},
 							tooltip: {
 								callbacks: {
-									title: (tooltipItems: any) => {
-										return ` ${tooltipItems[0].dataset.label}`;
-									},
+									title: (context) => ` ${context[0].dataset.label}`,
 									label: (context) => {
-										// const label = context.label;
-										const value = context.parsed.y;
-										return `${Math.round(value / 60)} minuti`;
+										const value = Math.round(context.parsed.y / 60);
+										if (value > 60) {
+											const hours = Math.floor(value / 60);
+											const minutes = Math.round(value % 60);
+											return `${hours} h ${minutes} min`;
+										}
+										return `${value} minuti`;
 									},
 								},
 							},

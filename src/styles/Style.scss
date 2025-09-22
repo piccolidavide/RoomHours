@@ -127,7 +127,7 @@ $theme-colors: (
 		transform: translateX(-50%);
 		width: 90%;
 		max-width: 800px;
-		z-index: 1000;
+		z-index: 1100;
 		box-sizing: border-box;
 		border: 0.5px solid rgba($body-color, 0.1);
 		border-radius: 0.75rem;
@@ -211,9 +211,8 @@ $theme-colors: (
 			//stile cardanvdropdown
 			&.dropdown {
 				padding: 0; // Rimuovi il padding per allineare correttamente
-				// display: inline flex;
 				align-items: center;
-				border-radius: 0.5rem ;
+				border-radius: 0.5rem;
 				
 				.dropdown-toggle{
 					padding: 0.5rem 1rem;
@@ -226,16 +225,19 @@ $theme-colors: (
 					&::after {
 						border-top-color: #ffffff; // Colore della freccia per contrasto
 					}
-
+					
 				}
 				
 				.dropdown-menu {
 					background-color: $dark;
 					color: $body-color;
-					width: 100%; // Stessa larghezza del bottone
+					// width: 100%; // Stessa larghezza del bottone
+					width: max(5rem, 100%); //se lo username è troppo piccolo assicura abbastanza spazio per gli elementi
 					min-width: 100%; // Assicura che non sia più largo
 					border-radius: 0.5rem; // Angoli smussati anche per il menu
-	
+					text-align: end;
+					z-index: 1050;
+					
 					.dropdown-item {
 						color: $body-color;
 	
@@ -316,7 +318,7 @@ $theme-colors: (
 		top : 0;
 		// left: 50%;
 		// transform: translateX(-50%);
-		z-index: 1001;
+		z-index: 1000;
 
 		.form-control{
 			text-align: center;
