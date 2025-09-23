@@ -9,28 +9,31 @@ import HomePage from "./pages/HomePage";
 import { ToastContainer } from "react-toastify";
 import CardNav from "./pages/cardnav/CardNav";
 import { AuthProvider } from "./context/AuthContext";
+import { ChartProvider } from "./context/ChartContext";
 // import ErrorBoundary from "./utils/ErrorBoundary";
 
 createRoot(document.getElementById("root")!).render(
 	<StrictMode>
 		<BrowserRouter>
 			<AuthProvider>
-				<CardNav title="Rooms usage" />
-				<ToastContainer
-					position="top-right"
-					autoClose={1000}
-					hideProgressBar={false}
-					newestOnTop
-					closeOnClick
-					draggable={false}
-					pauseOnHover
-					theme="dark"
-				/>
-				<Routes>
-					<Route path="/" element={<LoginPage />} />
-					<Route path="/SignupPage" element={<SignupPage />} />
-					<Route path="/HomePage" element={<HomePage />} />
-				</Routes>
+				<ChartProvider>
+					<CardNav title="Rooms usage" />
+					<ToastContainer
+						position="top-right"
+						autoClose={1000}
+						hideProgressBar={false}
+						newestOnTop
+						closeOnClick
+						draggable={false}
+						pauseOnHover
+						theme="dark"
+					/>
+					<Routes>
+						<Route path="/" element={<LoginPage />} />
+						<Route path="/SignupPage" element={<SignupPage />} />
+						<Route path="/HomePage" element={<HomePage />} />
+					</Routes>
+				</ChartProvider>
 			</AuthProvider>
 		</BrowserRouter>
 	</StrictMode>,

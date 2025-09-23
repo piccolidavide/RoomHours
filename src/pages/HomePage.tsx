@@ -9,6 +9,9 @@ import DatePicker from "../utils/gui_add_ons/DatePicker";
 import { formatDate, getDateFromString } from "../utils/FormatDate";
 import UsageBarChart from "../utils/usage_charts/UsageBarChart";
 import UsageGroupedBarChart from "../utils/usage_charts/UsageGroupedBarChart";
+import { useChart } from "../context/useChart";
+import { Chart } from "chart.js";
+import { ChartProvider } from "../context/ChartContext";
 
 const chartColors = {
 	backgroundColor: [
@@ -31,6 +34,7 @@ const chartColors = {
 
 export default function HomePage() {
 	const { user, loading } = useAuth();
+	const { setRoomsData, setDate } = useChart();
 	const [dataLoading, setDataLoading] = useState(true);
 	const [roomUsageData, setRoomUsageData] = useState<RoomsUsageData[]>([]);
 	const [filteredData, setFilteredData] = useState<RoomsUsageData[]>([]);
@@ -54,9 +58,11 @@ export default function HomePage() {
 
 			if (dates.length > 0) {
 				setSelectedDate(getDateFromString(dates[dates.length - 1])); // Set the latest date the users has data on
+				setDate(getDateFromString(dates[dates.length - 1])); // date in ChartContext
 			}
 
 			setRoomUsageData(data);
+			setRoomsData(data); // data in ChartContext
 		} catch (error) {
 			console.error(error);
 			setRoomUsageData([]);
@@ -121,25 +127,27 @@ export default function HomePage() {
 			<div className="text-center mt-5 text-secondary">
 				<h2 className="divider gradient">7 days recap</h2>
 			</div>
-			<div className="chart-container">
-				<UsageGroupedBarChart
-					selectedDate={selectedDate}
-					roomsUsageData={roomUsageData}
-					colors={chartColors}
-					type="week"
-				/>
-			</div>
-			<div className="text-center text-secondary">
-				<h2 className="divider gradient">4 weeks recap</h2>
-			</div>
-			<div className="chart-container">
-				<UsageGroupedBarChart
-					selectedDate={selectedDate}
-					roomsUsageData={roomUsageData}
-					colors={chartColors}
-					type="month"
-				/>
-			</div>
+			<ChartProvider>
+				<div className="chart-container">
+					<UsageGroupedBarChart
+						selectedDate={selectedDate}
+						roomsUsageData={roomUsageData}
+						colors={chartColors}
+						type="week"
+					/>
+				</div>
+				<div className="text-center text-secondary">
+					<h2 className="divider gradient">4 weeks recap</h2>
+				</div>
+				<div className="chart-container">
+					<UsageGroupedBarChart
+						selectedDate={selectedDate}
+						roomsUsageData={roomUsageData}
+						colors={chartColors}
+						type="month"
+					/>
+				</div>
+			</ChartProvider>
 		</div>
 	) : (
 		<p className="d-flex justify-content-center align-items-center text-center">
