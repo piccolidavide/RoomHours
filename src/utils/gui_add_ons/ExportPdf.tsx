@@ -4,52 +4,11 @@ import { saveAs } from "file-saver";
 import { ReportPDF } from "./ReportPDF";
 import { addDays, startOfWeek } from "date-fns";
 import { NavDropdown } from "react-bootstrap";
-import { useEffect, useRef, useState } from "react";
 
-// const PDF = ({
-// 	roomsData,
-// 	weekChart,
-// 	monthChart,
-// }: {
-// 	roomsData: RoomsUsageData[];
-// 	weekChart: string;
-// 	monthChart: string;
-// }) => (
-// 	<Document>
-// 		<TablePage data={roomsData} />
-// 		<ChartsPage weekChart={weekChart} monthChart={monthChart} />
-// 	</Document>;
-// );
-
-// const handlePdfExport = () => {
 const ExportPDF = () => {
-	const { roomsData, weekChart, monthChart, date /* refreshCounter, refreshImagesRef */ } = useChart();
-	// const [isRoomReady, setIsRoomReady] = useState(false);
-	// const checkInterval = useRef<NodeJS.Timeout | null>(null);
-
-	//check if images are ready
-	// useEffect(() => {
-	// 	console.log("useeffect");
-	// 	if (weekChart && monthChart) {
-	// 		setIsRoomReady(true);
-	// 	} else {
-	// 		setIsRoomReady(false);
-	// 	}
-	// }, [weekChart, monthChart, date]);
+	const { roomsData, weekChart, monthChart, date } = useChart();
 
 	const generatePdf = async () => {
-		// if (!isRoomReady) {
-		// 	await new Promise<void>((resolve) => {
-		// 		const chechImages = () => {
-		// 			if (weekChart && monthChart) {
-		// 				setIsRoomReady(true);
-		// 				resolve();
-		// 			}
-		// 		};
-		// 		chechImages();
-		// 	});
-		// }
-
 		const rooms = [...new Set(roomsData.map((entry) => entry.room_name).filter(Boolean))] as string[];
 		const startDate: { week: Date; month: Date } = {
 			week: addDays(date, -7),
@@ -85,30 +44,16 @@ const ExportPDF = () => {
 			"Last month": minutesPerRoom(filter(startDate.month, endDate.month)),
 			"All time": minutesPerRoom(filter()),
 		};
-
-		console.log("Generating PDF with data:", data);
-		console.log("Week chart image:", weekChart);
-		console.log("Month chart image:", monthChart);
 		try {
 			// if (!weekChart || !monthChart) {
 			// 	throw new Error("Chart images are not available");
 			// }
-
+			// console.log(data["All time"]);
 			const blob = await pdf(
 				<ReportPDF data={data} weekChart={weekChart} monthChart={monthChart} />,
 			).toBlob();
-			const input = document.createElement("input");
-			input.type = "file";
-			input.setAttribute("nwsaveas", "rooms_usage.pdf");
-			input.setAttribute("nwdirectory", "");
-			input.onchange = (e) => {
-				const target = e.target as HTMLInputElement;
-				if (target.files && target.files.length > 0) {
-					const filePath = (target.files[0] as any)?.path as string;
-					saveAs(blob, filePath);
-				}
-			};
-			input.click();
+
+			saveAs(blob, "rooms_usage.pdf");
 		} catch (error) {
 			console.error("Error generating or saving PDF:", error);
 		}

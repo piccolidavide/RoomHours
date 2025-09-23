@@ -1,13 +1,63 @@
 import { Document, Page, Text, View, Image, StyleSheet } from "@react-pdf/renderer";
 
 // Stili globali
+// Definizione degli stili per la tabella
 const styles = StyleSheet.create({
-	page: { flexDirection: "column", backgroundColor: "#FFFFFF", padding: 30 },
-	section: { margin: 10, padding: 10 },
-	table: { display: "flex", width: "auto", borderStyle: "solid", borderWidth: 1 },
-	tableRow: { margin: "auto", flexDirection: "row" },
-	tableCell: { margin: "auto", padding: 5, borderStyle: "solid", borderWidth: 1, width: 100 }, // Adatta per stanze
-	chartImage: { width: "100%", height: 300 }, // Per immagini grafici
+	page: {
+		flexDirection: "column",
+		padding: 20,
+		backgroundColor: "#f5f5f5",
+	},
+	section: {
+		flexGrow: 1,
+		justifyContent: "center",
+		alignItems: "center",
+	},
+	table: {
+		width: "90%",
+		borderWidth: 1,
+		borderColor: "#333",
+		borderStyle: "solid",
+		borderRadius: 4,
+		overflow: "hidden",
+	},
+	tableRow: {
+		flexDirection: "row",
+		borderBottomWidth: 1,
+		borderBottomColor: "#333",
+		backgroundColor: "#fff",
+	},
+	headerRow: {
+		flexDirection: "row",
+		borderBottomWidth: 2,
+		borderBottomColor: "#000",
+		backgroundColor: "#e0e0e0",
+		fontWeight: "bold",
+	},
+	tableCell: {
+		flex: 1,
+		padding: 8,
+		fontSize: 10,
+		textAlign: "center",
+		borderRightWidth: 1,
+		borderRightColor: "#333",
+	},
+	headerCell: {
+		flex: 1,
+		padding: 8,
+		fontSize: 11,
+		textAlign: "center",
+		fontWeight: "bold",
+		borderRightWidth: 1,
+		borderRightColor: "#333",
+	},
+	title: {
+		fontSize: 18,
+		marginBottom: 20,
+		textAlign: "center",
+		color: "#333",
+		fontWeight: "bold",
+	},
 });
 
 // Componente per la Tabella (Pagina 1)
@@ -19,53 +69,58 @@ const TablePage = ({
 		"Last month": Record<string, number>;
 		"All time": Record<string, number>;
 	};
-}) => (
-	<Page size="A4" style={styles.page}>
-		<View style={styles.section}>
-			<Text style={{ fontSize: 18, marginBottom: 10 }}>Resoconto Utilizzo Stanze</Text>
-			<View style={styles.table}>
-				{/* Header: Periodi come righe, stanze come colonne */}
-				<View style={styles.tableRow}>
-					<Text style={styles.tableCell}>Periodo</Text>
-					{Object.keys(data["Last 7 days"].rooms || {}).map((room) => (
-						<Text key={room} style={styles.tableCell}>
-							{room}
-						</Text>
-					))}
-				</View>
-				{Object.entries(data).map(([period, row], i) => (
-					<View key={i} style={styles.tableRow}>
-						<Text style={styles.tableCell}>{period}</Text>
-						{Object.entries(row.rooms || {}).map(([room, value]) => (
-							<Text key={room} style={styles.tableCell}>
-								{value} min
+}) => {
+	const rooms = Object.keys(data["Last 7 days"]);
+
+	return (
+		<Page size="A4" style={styles.page}>
+			<View style={styles.section}>
+				<Text style={styles.title}>Rooms Usage Report</Text>
+				<View style={styles.table}>
+					{/* Header: Periodi come righe, stanze come colonne */}
+					<View style={styles.headerRow}>
+						<Text style={styles.headerCell}>Period</Text>
+						{rooms.map((room) => (
+							<Text key={room} style={styles.headerCell}>
+								{room}
 							</Text>
 						))}
 					</View>
-				))}
+					{/* Dati */}
+					{Object.entries(data).map(([period, values]) => (
+						<View key={period} style={styles.tableRow}>
+							<Text style={styles.tableCell}>{period}</Text>
+							{rooms.map((room) => (
+								<Text key={`${room}-${period}`} style={styles.tableCell}>
+									{values[room] ? Math.round(values[room]) + "min" : "-"}
+								</Text>
+							))}
+						</View>
+					))}
+				</View>
 			</View>
-		</View>
-	</Page>
-);
+		</Page>
+	);
+};
 
 // Componente per Grafici (Pagina 2)
-const ChartsPage = ({
-	weekChartImage,
-	monthChartImage,
-}: {
-	weekChartImage: string;
-	monthChartImage: string;
-}) => (
-	<Page size="A4" style={styles.page}>
-		<View style={styles.section}>
-			<Text style={{ fontSize: 18, marginBottom: 10 }}>Grafici Ultimi 7 Giorni e Mese</Text>
-			<Image style={styles.chartImage} src={weekChartImage} />
-			<Text style={{ marginTop: 10, marginBottom: 10 }}>Ultimi 7 Giorni</Text>
-			<Image style={styles.chartImage} src={monthChartImage} />
-			<Text style={{ marginTop: 10 }}>Ultimo Mese</Text>
-		</View>
-	</Page>
-);
+// const ChartsPage = ({
+// 	weekChartImage,
+// 	monthChartImage,
+// }: {
+// 	weekChartImage: string;
+// 	monthChartImage: string;
+// }) => (
+// 	<Page size="A4" style={styles.page}>
+// 		<View style={styles.section}>
+// 			<Text style={{ fontSize: 18, marginBottom: 10 }}>Grafici Ultimi 7 Giorni e Mese</Text>
+// 			<Image style={styles.chartImage} src={weekChartImage} />
+// 			<Text style={{ marginTop: 10, marginBottom: 10 }}>Ultimi 7 Giorni</Text>
+// 			<Image style={styles.chartImage} src={monthChartImage} />
+// 			<Text style={{ marginTop: 10 }}>Ultimo Mese</Text>
+// 		</View>
+// 	</Page>
+// );
 
 // Documento Principale
 export const ReportPDF = ({

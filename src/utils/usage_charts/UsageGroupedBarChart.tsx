@@ -22,8 +22,6 @@ const UsageGroupedBarChart = ({ selectedDate, roomsUsageData, colors, type }: Us
 	useEffect(() => {
 		const update = () => {
 			if (chartRef.current) {
-				console.log("here");
-
 				const image = chartRef.current.toBase64Image("image/png", 1);
 				setChartImage(type, image);
 			}
