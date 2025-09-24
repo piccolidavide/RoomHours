@@ -1,13 +1,7 @@
-// src/styles/Style.scss
+@use "sass:map"; // Upload sass module for map manipulations
 
-// Carica i moduli Sass necessari
 
-@use "sass:map";
-
-// Disabilita RFS per evitare avvisi di deprecazione in _rfs.scss
-$enable-rfs: false;
-
-// Definisci i colori personalizzati
+// Custom colors scheme
 $primary: #6f42c1; // Viola vibrante
 $secondary: #fd7e14; // Arancione vibrante
 $dark: #212529; // Sfondo scuro
@@ -15,7 +9,7 @@ $body-bg: $dark; // Sfondo generale del body
 $body-color: #f8f9fa; // Colore del testo chiaro
 $navbar-bg: #00000079; // Navbar più scura del body-bg
 
-// Personalizza i colori del tema
+// Custom theme colors map
 $theme-colors: (
 	"primary": $primary,
 	"secondary": $secondary,
@@ -27,7 +21,7 @@ $theme-colors: (
 	"dark": $dark,
 );
 
-// Importa il resto di Bootstrap
+// Import Bootstrap with custom variables
 @use "../../node_modules/bootstrap/scss/bootstrap" with (
 	$primary: $primary,
 	$secondary: $secondary,
@@ -36,6 +30,7 @@ $theme-colors: (
 	$body-color: $body-color
 );
 
+// Dark mode styles
 [data-bs-theme="dark"] {
 	background-color: $dark;
 	color: $body-color;
@@ -48,6 +43,7 @@ $theme-colors: (
 		color: $secondary !important;
 	}
 
+	// Custom button styles
 	.btn-primary {
 		background-image: linear-gradient(135deg, $primary, $secondary);
 		background-color: transparent;
@@ -80,6 +76,7 @@ $theme-colors: (
 		}
 	}
 
+	// Custom form styles
 	.form-control {
 		background-color: #343a40;
 		color: $body-color;
@@ -106,28 +103,29 @@ $theme-colors: (
 		}
 	}
 
+	// Style for succes alert toast
 	.alert-success {
 		background-color: mix(black, #198754, 40%);
 		color: $body-color;
 	}
 
+	// Style for danger alert toast
 	.alert-danger {
 		background-color: mix(black, #dc3545, 40%);
 		color: $body-color;
 	}
 
-	
+	//Cardnav styles
 	.card-nav-container.navbar.navbar-expand-lg,
 	.card-nav-container.navbar.navbar-expand-lg.navbar-dark {
-		// --bs-navbar-bg: $navbar-bg !important; // Sovrascrivi la variabile di Bootstrap
-		background-color: $navbar-bg !important;
+		background-color: $navbar-bg !important; //navbar color
 		position: absolute;
 		top: 1.5em;
-		left: 50%;
+		left: 50%; //Center horizontally
 		transform: translateX(-50%);
-		width: 90%;
+		width: 90%; // Occupy 90% 
 		max-width: 800px;
-		z-index: 1100;
+		z-index: 1100; // Priority above other elements
 		box-sizing: border-box;
 		border: 0.5px solid rgba($body-color, 0.1);
 		border-radius: 0.75rem;
@@ -136,119 +134,129 @@ $theme-colors: (
 		padding: 0;
 		overflow: visible;
 		
+		// Navbar content
 		.card-nav-top {
-			position: relative; // Modificato per evitare conflitti con collapse
+			position: relative; 
 			height: 60px;
 			display: flex;
 			align-items: center;
-			justify-content: center; // Centra il contenuto	
-			padding: 0.5rem 1rem; 
+			justify-content: center; 	
+			padding: 0.5rem 1rem;  
 		}
 
+		// Logo style and position
 		.navbar-logo-container {
-			position: absolute;
-			left: 1rem;
-			display: flex;
-			align-items: center;
+			position: absolute; //make sure it's on the left
+			left: 1rem; // Some space from the left edge
+			display: flex; 
+			align-items: center; 
 
 			img {
-				margin-right: 0.5rem;
-				width: 40px;
-				height: 40px;
-				object-fit: contain; // Mantiene le proporzioni dell'immagine
+				margin-right: 0.5rem; 
+				width: 40px; 
+				height: 40px; 
+				object-fit: contain; // keeps aspect ratio
 			}
 		}
 
+		// Title container 
 		.navbar-brand-container {
-			position: absolute;
-			left: 50%;
+			position: absolute; // In the center of the nav
+			left: 50%; // Center horizontally
 			transform: translateX(-50%);
 			display: flex;
-			justify-content: center; // Centra il contenuto
+			justify-content: center; 
 			width: 100%;
-			margin-bottom: 0.3rem; // Spazio sotto il titolo
+			margin-bottom: 0.3rem; // Slightly adjust vertical position
 		}
 
 		.navbar-brand {
-			// Assicura che il titolo sia centrato correttamente
-			margin: 0;
-			font-size: 2.4rem !important; // Aumenta la dimensione del titolo
-			line-height: 1; // Migliora la leggibilità
-			font-weight: 700; // Opzionale: rende il titolo più marcato
+			margin: 0; // Remove default margin
+			font-size: 2.4rem !important; // Title size
+			line-height: 1; // More readable
+			font-weight: 700; // more bold
 			text-align: center;
+
+			// Subtle shadow for better readability
 			text-shadow: 
-				-.5px -.5px 0 #ffffff,  
-				.5px -.5px 0 #ffffff,
-				-.5px  .5px 0 #ffffff,
-				.5px  .5px 0 #ffffff;
+				-.5px -.5px 0 #ffffff,   
+				.5px -.5px 0 #ffffff, 
+				-.5px  .5px 0 #ffffff, 
+				.5px  .5px 0 #ffffff; 
 		}
 
+		// Container for the button on the right
 		.cta-button-container {
-			position: absolute;
-			right: 1rem;
-			display: flex;
-			align-items: center;
+			position: absolute; // Make sure it's on the right
+			right: 1rem; // Some space from the right edge
+			display: flex; 
+			align-items: center; 
 		}
 		
 		.card-nav-cta-button {
-			// Stile per il bottone Registrati
-			padding: 0.5rem 1rem;
-			background-image: linear-gradient(90deg, $primary, $secondary);
+			padding: 0.5rem 1rem; // Padding for better click area 
+			background-image: linear-gradient(90deg, $primary, $secondary); //give it a gradient look
 			background-color: transparent;
-			border: 0px solid transparent; // O usa border-color: $secondary se vuoi un bordo
-			color: #ffffff; // Testo bianco per contrasto (o usa $body-color: #f8f9fa)
+			border: 0px solid transparent; // no border
+			color: #ffffff; // White text for contrast
 			
+			// On hover changes slightly the gradient and border color
 			&:hover {
 				background-image: linear-gradient(90deg, mix(black, $primary, 20%), mix(black, $secondary, 20%));
 				border-color: mix(black, $secondary, 10%);
 			}
 			
+			// When clicked or focused, add an orange shadow
 			&:focus,
 			&:focus-visible {
-				box-shadow: 0 0 0 0.25rem rgba($secondary, 0.5); // Ombreggiatura arancione per il focus
+				box-shadow: 0 0 0 0.25rem rgba($secondary, 0.5); 
 			}
 
-			//stile cardanvdropdown
+			// dropdown specific styles
 			&.dropdown {
-				padding: 0; // Rimuovi il padding per allineare correttamente
-				align-items: center;
-				border-radius: 0.5rem;
+				padding: 0; // Remove padding to fit the dropdown toggle
+				align-items: center; 
+				border-radius: 0.5rem; // Rounded corners 
 				
+				// Dropdown toggle button styles
 				.dropdown-toggle{
-					padding: 0.5rem 1rem;
+					padding: 0.5rem 1rem; // Padding for better click area
 					border-radius: 0.5rem;
-					display: flex;
-					align-items: center;
-					width: 100%;
-					box-sizing: border-box;
+					display: flex; 
+					align-items: center; 
+					width: 100%; // Full width to match the dropdown menu
+					box-sizing: border-box; // Include padding and border in the width
 					
+
 					&::after {
-						border-top-color: #ffffff; // Colore della freccia per contrasto
+						border-top-color: #ffffff; // aroow color
 					}
 					
 				}
 				
+				// Dropdown menu styles
 				.dropdown-menu {
 					background-color: $dark;
 					color: $body-color;
-					// width: 100%; // Stessa larghezza del bottone
-					width: max(5rem, 100%); //se lo username è troppo piccolo assicura abbastanza spazio per gli elementi
-					min-width: 100%; // Assicura che non sia più largo
-					border-radius: 0.5rem; // Angoli smussati anche per il menu
-					text-align: end;
-					z-index: 1050;
+					width: max(5rem, 100%); //if the username is too short, the menu will be at least 5rem wide
+					min-width: 100%; // Makes sure its not too big
+					border-radius: 0.5rem; // Rounded corners
+					text-align: end; // Align text to the right
+					z-index: 1050; // Ensure it appears above the datepicker
 					
+					// Individual dropdown item styles
 					.dropdown-item {
-						color: $body-color;
+						color: $body-color; 
 	
+						// On hover, change background and text color for better visibility
 						&:hover {
 							background-color: mix(black, $dark, 20%);
 							color: #ffffff;
 						}
 					}
-	
+					
 					.dropdown-divider {
-						border-top: 1px solid mix(black, #ffffff, 50%); // Divider più chiaro
+						border-top: 1px solid mix(black, #ffffff, 50%); // Light border for separation
 					}
 				}
 			}
@@ -257,42 +265,46 @@ $theme-colors: (
 	}
 
 	.cardnav-dropdown-toast-form {
-		background-color: $dark !important; // Colore di sfondo rosso scuro
-		color: $body-color !important; // Colore del testo chiaro
-		border-radius: 0.5rem; // Angoli smussati
-		box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); // Ombra per profondità
-		border: 1px solid mix(black, #ffffff, 40%); // Bordo leggero
-		padding: 2rem; // Spaziatura interna
-		min-width: 400px; // Larghezza minima
-		max-width: 90vw; // Larghezza massima per schermi piccoli
+		background-color: $dark !important; // dark background
+		color: $body-color !important; // light text color
+		border-radius: 0.5rem; // rounded corners;
+		box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); // slight shadow for depth
+		border: 1px solid mix(black, #ffffff, 40%); // light border
+		padding: 2rem; // padding for spacing
+		min-width: 400px; 
+		max-width: 90vw; // responsive width for small screens
 
 		.Toastify__close-button {
-			color: $body-color !important; // Colore del testo chiaro
+			color: $body-color !important; // light color for close button
 		}
 		
+		// Style for text in the toast
 		p {
-			margin: 0 0 1rem 0; // Rimuovi margine dai paragrafi
-			color: $body-color;
-			text-align: center; // Centra il testo
+			margin: 0 0 1rem 0; // Remove margins and add bottom margin for spacing
+			color: $body-color; 
+			text-align: center; 
 		}
 
+		
 		.toast-cancel-button {
-			flex: 1 1 0; // Occupa metà della larghezza
+			flex: 1 1 0; // Half width
 			background-color: black;
-			border: 1px solid $body-color; // Bordo chiaro
-			color: $body-color !important; // Colore del testo chiaro
+			border: 1px solid $body-color; 
+			color: $body-color !important; 
 			
+			// On hover, slightly change background 
 			&:hover {
 				background-color: mix(white, black, 20%);
 			}
 		}
 
 		.toast-confirm-button {
-			flex: 1 1 0; // Occupa metà della larghezza
+			flex: 1 1 0; // Half width
 			background-color: $primary;
-			border: none; // Bordo chiaro
-			color: $body-color !important; // Colore del testo chiaro
+			border: none; 
+			color: $body-color !important;
 			
+			// On hover, slightly change background 
 			&:hover {
 				background-color: mix(black, $primary, 20%);
 			}
@@ -300,38 +312,36 @@ $theme-colors: (
 	}
 
 	.home-page-container{
-		margin-top: 7rem;
+		margin-top: 7rem; // Space for the navbar
 	}
 
+	// Style for the date picker in home page
 	.date-picker {
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		// width: min(18rem, 90%);
-		// min-width: 10rem;
-		// max-width: 20rem;
-		width : min(38rem, 80%);
-		margin-left: auto;
-		margin-right: auto;
-		// margin: auto;
-		position: sticky;
-		top : 0;
-		// left: 50%;
-		// transform: translateX(-50%);
-		z-index: 1000;
+		width : min(38rem, 80%); // Responsive width
+		margin-left: auto; // Center horizontally
+		margin-right: auto; // Center horizontally
+		position: sticky; // Stays at the top when scrolling
+		top : 0; // Top of the viewport
+		z-index: 1000; // Above other elements but below navbar
 
+		// form that shows the current selected date
 		.form-control{
 			text-align: center;
 			-webkit-text-fill-color: $body-color;
 			background-color: $navbar-bg;
-			border: 0px solid transparent; // O usa border-color: $primary se vuoi un bordo
+			border: 0px solid transparent; // No border
 
+			// On focus, remove shadow
 			&:focus{
 				box-shadow: none;
 			}
 		}
 	}
 
+	// Chart container styles
 	.chart-container {
 		display: flex;
 		justify-content: center;
@@ -340,21 +350,20 @@ $theme-colors: (
 	}
 
 	.chart-card {
-		width: 80%;
-		box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-		margin: auto;
-		// margin-top: 1rem;
+		width: 80%; // Responsive width
+		box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); // slight shadow for depth
+		margin: auto; // Center horizontally
 		
 		h5 {
-			color: mix( #000000, $body-color, 30%);
+			color: mix( #000000, $body-color, 30%); // Dark title
 		}
 		
 		.card-body {
-			height: 30rem;
-			display: flex;
+			height: 30rem; // height for the chart
+			display: flex; 
 			flex-direction: column;
 			align-items: center;
-			padding: 1rem;
+			padding: 1rem; 
 
 			p {
 				text-align: center;
@@ -366,31 +375,38 @@ $theme-colors: (
 		}
 	}
 
+	// Divider between chart sections
 	.divider {
 		display: flex;
 		align-items: center;
 		text-align: center;
-		margin: 1em 0;
-		line-height: 2em;
-		color: $primary;
-		position: relative;
+		margin: 1em 0; // Space above and below
+		line-height: 2em; // Line thickness
+		color: $primary; //white
+		position: relative; 
 		
-		// Pseudo-elementi per le linee gradienti
+		// lines on the sides of the text
 		&:before,
 		&:after {
 			content: "";
 			flex: 1;
-			height: 1px; // Linea sottile come nell'esempio
+			height: 1px; // Line thickness
+
+			// Gradient effect
 			background: linear-gradient(to right,
 					transparent,
 					gray 50%,
-					transparent); // Gradiente per un effetto sfumato
-			margin: 0 10px; // Spazio tra il testo e le linee
+					transparent); 
+
+			margin: 0 10px; // Space between text and lines
 		}
 
+		// Text styles
 		&.gradient {
-			font-weight: bold; // Opzionale, per un testo più marcato
-			text-transform: uppercase; // Opzionale, per replicare uno stile moderno
+			font-weight: bold; // Bold text
+			text-transform: uppercase; 
+
+			// Shadow for better readability
 			text-shadow: 
 				-.5px -.5px 0 #ffffff,  
 				.5px -.5px 0 #ffffff,
@@ -400,12 +416,13 @@ $theme-colors: (
 
 	}
 	
+	// Responsive style for small screens
 	@media (max-width: 600px) { 
 		.card-nav-container.navbar.navbar-expand-lg,
 		.card-nav-container.navbar.navbar-expand-lg.navbar-dark {
 
 			.navbar-brand-container {
-				display: none; //Titolo navbar nascosto quando la finestra è troppo piccola
+				display: none; // Hide the logo of the navbar when the screen is small
 			}
 		}
 	}

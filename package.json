@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@html2canvas/html2canvas": "^1.6.3",
     "@react-pdf/renderer": "^4.3.0",
     "@supabase/auth-ui-react": "^0.4.7",
     "@supabase/auth-ui-shared": "^0.1.8",
@@ -20,6 +21,8 @@
     "date-fns": "^4.1.0",
     "file-saver": "^2.0.5",
     "gsap": "^3.13.0",
+    "html-to-image": "^1.11.13",
+    "jspdf": "^3.0.3",
     "react": "^19.1.1",
     "react-bootstrap": "^2.10.10",
     "react-chartjs-2": "^5.3.0",

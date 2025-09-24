@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/useAuth";
-import Spinner from "../utils/gui_add_ons/Spinner";
+import { usePdfContext } from "../context/usePdfContext";
+import { PdfProvider } from "../context/PdfContext";
 import { retrieveUserData, subscribeToRoomUsage } from "../services/supabase";
 import type { RoomsUsageData } from "../types/Types";
+import Spinner from "../utils/gui_add_ons/Spinner";
+import { formatDate, getDateFromString } from "../utils/FormatDate";
 import UsageDoughnutChart from "../utils/usage_charts/UsageDoughnutChart";
 import UsageLineChart from "../utils/usage_charts/UsageLineChart";
 import DatePicker from "../utils/gui_add_ons/DatePicker";
-import { formatDate, getDateFromString } from "../utils/FormatDate";
 import UsageBarChart from "../utils/usage_charts/UsageBarChart";
 import UsageGroupedBarChart from "../utils/usage_charts/UsageGroupedBarChart";
-import { useChart } from "../context/useChart";
-import { Chart } from "chart.js";
-import { ChartProvider } from "../context/ChartContext";
 
+// Colors for the charts
 const chartColors = {
 	backgroundColor: [
 		"rgba(255, 99, 132, 0.2)",
@@ -32,21 +32,29 @@ const chartColors = {
 	],
 };
 
+/**
+ * HomePage component.
+ * Holds all the charts showing the user data, allowing the user to select the date to show data from.
+ *
+ * @returns {JSX.Element} - The JSX element representing the HomePage component.
+ */
 export default function HomePage() {
-	const { user, loading } = useAuth();
-	const { setRoomsData, setDate } = useChart();
-	const [dataLoading, setDataLoading] = useState(true);
-	const [roomUsageData, setRoomUsageData] = useState<RoomsUsageData[]>([]);
-	const [filteredData, setFilteredData] = useState<RoomsUsageData[]>([]);
-	const [selectedDate, setSelectedDate] = useState(new Date());
-	const [distinctDates, setDistinctDates] = useState<string[]>([]);
+	const { user, loading } = useAuth(); // context for the user to stay updated on its state
+	const { setRoomsData, setDate } = usePdfContext(); // context for the chart to be used when creating pdf
+	const [dataLoading, setDataLoading] = useState(true); // loading state for the data retrieval
+	const [roomUsageData, setRoomUsageData] = useState<RoomsUsageData[]>([]); // all the data retrieved from the db
+	const [filteredData, setFilteredData] = useState<RoomsUsageData[]>([]); // data filtered by the selected date
+	const [selectedDate, setSelectedDate] = useState(new Date()); // date selected by the user
+	const [distinctDates, setDistinctDates] = useState<string[]>([]); // all the distinct dates the user has data on
 
+	// Function to retrieve user data from the database and update the various states
 	const updateUserData = async () => {
 		setDataLoading(true);
 
 		try {
-			const data = await retrieveUserData(user.id);
+			const data = await retrieveUserData(user.id); // Fetch user data from the database
 
+			// Extract distinct dates from the dataset
 			const dates = [
 				...new Set(
 					data.map((item) => {
@@ -54,15 +62,18 @@ export default function HomePage() {
 					}),
 				),
 			];
-			setDistinctDates(dates);
+			setDistinctDates(dates); // Update the state with distinct dates
 
+			// If there are dates available, set the selected date to the latest one available
 			if (dates.length > 0) {
-				setSelectedDate(getDateFromString(dates[dates.length - 1])); // Set the latest date the users has data on
-				setDate(getDateFromString(dates[dates.length - 1])); // date in ChartContext
+				//update the dates state
+				setSelectedDate(getDateFromString(dates[dates.length - 1]));
+				setDate(getDateFromString(dates[dates.length - 1]));
 			}
 
+			// update the room usage data state for both local and pdf context
 			setRoomUsageData(data);
-			setRoomsData(data); // data in ChartContext
+			setRoomsData(data);
 		} catch (error) {
 			console.error(error);
 			setRoomUsageData([]);
@@ -71,40 +82,47 @@ export default function HomePage() {
 		}
 	};
 
+	// Effect to fetch user data when the user ID changes or loading state changes
 	useEffect(() => {
 		if (!user?.id || loading) return;
-		// console.log("Retrieving user data...");
 
 		updateUserData();
 	}, [user?.id, loading]);
 
+	// Effect to filter data based on the selected date
 	useEffect(() => {
 		const filtered = roomUsageData.filter(
 			(item) => formatDate(item.start_timestamp) === formatDate(selectedDate),
 		);
 
-		setFilteredData(filtered);
+		setFilteredData(filtered); // updating the filtered data state
 	}, [selectedDate, roomUsageData]);
 
+	// Effect to subscribe to real-time updates for room usage data
 	useEffect(() => {
 		const subscribe = async () => {
 			if (!user?.id || loading) return;
 
-			const unsubscribe = await subscribeToRoomUsage(user.id, updateUserData);
+			const unsubscribe = await subscribeToRoomUsage(user.id, updateUserData); // Subscribe in supabase client
 
-			return unsubscribe;
+			return unsubscribe; // Cleanup function to unsubscribe when the component unmounts or dependencies change
 		};
 
 		subscribe();
 	}, [user?.id, loading]);
 
-	if (loading || dataLoading) return <Spinner />;
+	if (loading || dataLoading) return <Spinner />; // Show a spinner while loading
 
+	/**
+	 * Handles a date change event from the DatePicker component
+	 * and updates the selectedDate state with the new date.
+	 * @param {Date} date The new date to be set as the selected date.
+	 */
 	const handleDateChange = (date: Date) => {
 		setSelectedDate(date);
 	};
 
-	// console.log("HomePage ", distinctDates);
+	// Render the main content of the HomePage component, if there is data available
 	return roomUsageData.length > 0 ? (
 		<div className="home-page-container">
 			<DatePicker
@@ -127,8 +145,8 @@ export default function HomePage() {
 			<div className="text-center mt-5 text-secondary">
 				<h2 className="divider gradient">7 days recap</h2>
 			</div>
-			<ChartProvider>
-				<div className="chart-container">
+			<PdfProvider>
+				<div className="chart-container" data-chart-type="grouped-bar-chart">
 					<UsageGroupedBarChart
 						selectedDate={selectedDate}
 						roomsUsageData={roomUsageData}
@@ -147,9 +165,10 @@ export default function HomePage() {
 						type="month"
 					/>
 				</div>
-			</ChartProvider>
+			</PdfProvider>
 		</div>
 	) : (
+		// Render a message if no data is available
 		<p className="d-flex justify-content-center align-items-center text-center">
 			Nessun dato disponibile
 		</p>

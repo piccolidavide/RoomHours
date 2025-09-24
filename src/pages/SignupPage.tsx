@@ -1,21 +1,33 @@
 import { useState } from "react";
-import { Link, useNavigate /* , Link  */ } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { signUp } from "../services/supabase";
 import { Button, Form, Container, Row, Col, Card } from "react-bootstrap";
 import { toast } from "react-toastify";
 
+/**
+ * SignupPage component.
+ * Allows users to create a new account with username, age, email, and password.
+ *
+ * @returns {JSX.Element} - The JSX element representing the SignupPage component.
+ */
 function SignupPage() {
-	const [username, setUsername] = useState("");
-	const [email, setEmail] = useState("");
-	const [password, setPassword] = useState("");
-	const [age, setAge] = useState("");
-	// const [error, setError] = useState<string | null>(null);
-	// const [success, setSuccess] = useState<string | null>(null);
-	const navigate = useNavigate();
+	const [username, setUsername] = useState(""); // State to hold the username input
+	const [email, setEmail] = useState(""); // State to hold the email input
+	const [password, setPassword] = useState(""); // State to hold the password input
+	const [age, setAge] = useState(""); // State to hold the age input
+	const navigate = useNavigate(); // Hook to navigate to different pages
 
+	/**
+	 * Handles the signup form submission.
+	 * Validates the input fields and attempts to sign up the user using the Supabase client
+	 *
+	 * If successful, displays a success toast and navigates to the HomePage.
+	 * If not, displays an error toast with the error message.
+	 */
 	const handleSignup = async (e: React.FormEvent) => {
 		e.preventDefault();
 
+		// Validates input
 		if (!username || !email || !password || !age) {
 			toast.error("Tutti i campi sono obbligatori.");
 			return;
@@ -34,46 +46,35 @@ function SignupPage() {
 		}
 
 		try {
-			// Chiama la funzione di registrazione definita in supabase.ts
-			const { user: userData } = await signUp(
-				username,
-				parseInt(age),
-				email,
-				password,
-			);
+			// Attempt to sign up the user using the Supabase client
+			const { user: userData } = await signUp(username, parseInt(age), email, password);
 
 			toast.success("Benvenuto " + userData.user_metadata.username, {
 				autoClose: 2000,
 			});
 
-			navigate("/HomePage");
+			navigate("/HomePage"); // Navigate to HomePage on successful signup
 		} catch (err: any) {
 			toast.error("Errore durante la registrazione: " + err.message);
 			console.error(err);
 		}
 	};
 
+	// Render the signup form
 	return (
 		<Container className="mt-5">
 			<Row className="justify-content-center">
 				<Col md={4}>
 					<Card className="form-card">
 						<Card.Body>
-							<h4 className="text-center mb-4">
-								Create your account
-							</h4>
+							<h4 className="text-center mb-4">Create your account</h4>
 							<Form onSubmit={handleSignup}>
-								<Form.Group
-									className="mb-3"
-									controlId="username"
-								>
+								<Form.Group className="mb-3" controlId="username">
 									{/* <Form.Label>Username</Form.Label> */}
 									<Form.Control
 										type="text"
 										value={username}
-										onChange={(e) =>
-											setUsername(e.target.value)
-										}
+										onChange={(e) => setUsername(e.target.value)}
 										placeholder="Inserisci il tuo username"
 										required
 									/>
@@ -93,38 +94,26 @@ function SignupPage() {
 									<Form.Control
 										type="email"
 										value={email}
-										onChange={(e) =>
-											setEmail(e.target.value)
-										}
+										onChange={(e) => setEmail(e.target.value)}
 										placeholder="Inserisci la tua email"
 										required
 									/>
 								</Form.Group>
-								<Form.Group
-									className="mb-3"
-									controlId="password"
-								>
+								<Form.Group className="mb-3" controlId="password">
 									{/* <Form.Label>Password</Form.Label> */}
 									<Form.Control
 										type="password"
 										value={password}
-										onChange={(e) =>
-											setPassword(e.target.value)
-										}
+										onChange={(e) => setPassword(e.target.value)}
 										placeholder="Inserisci la tua password"
 										required
 									/>
 								</Form.Group>
-								<Button
-									variant="primary"
-									type="submit"
-									className="w-100"
-								>
+								<Button variant="primary" type="submit" className="w-100">
 									Registrati
 								</Button>
 								<p className="text-center mt-3">
-									Hai già un account?{" "}
-									<Link to="/">Login</Link>
+									Hai già un account? <Link to="/">Login</Link>
 								</p>
 							</Form>
 						</Card.Body>

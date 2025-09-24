@@ -181,21 +181,6 @@ const uploadRoomData = async (
 		return { success: false, error: insertError.message };
 	}
 
-	// console.log(
-	// 	"Periods: ",
-	// 	periods.map(({ room_id, start_timestamp, end_timestamp, value }) => {
-	// 		const roomKey = Object.keys(roomNamesId).find(
-	// 			(key) => roomNamesId[key] === room_id,
-	// 		);
-	// 		const roomName = roomKey ? roomNamesId[roomKey] : "unknown";
-	// 		return `${roomName} - ${
-	// 			start_timestamp ? start_timestamp.toISOString() : "null"
-	// 		} - ${
-	// 			end_timestamp ? end_timestamp.toISOString() : "null"
-	// 		} - ${value}`;
-	// 	}),
-	// );
-
 	return { success: true };
 };
 

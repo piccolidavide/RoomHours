@@ -3,8 +3,7 @@ import { Chart as ChartJS, BarElement, CategoryScale, LinearScale, Tooltip, Lege
 import { Card } from "react-bootstrap";
 import type { RoomsUsageData } from "../../types/Types";
 import { addDays, startOfWeek } from "date-fns";
-import { useEffect, useRef } from "react";
-import { useChart } from "../../context/useChart";
+import { useRef } from "react";
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
@@ -17,17 +16,6 @@ interface UsageGroupedBarChartProps {
 
 const UsageGroupedBarChart = ({ selectedDate, roomsUsageData, colors, type }: UsageGroupedBarChartProps) => {
 	const chartRef = useRef<any>(null);
-	const { weekChart, monthChart, setChartImage } = useChart();
-
-	useEffect(() => {
-		const update = () => {
-			if (chartRef.current) {
-				const image = chartRef.current.toBase64Image("image/png", 1);
-				setChartImage(type, image);
-			}
-		};
-		update();
-	}, [selectedDate, roomsUsageData, type, setChartImage]);
 
 	const filteredData = (() => {
 		const startDate =

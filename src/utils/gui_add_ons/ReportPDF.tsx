@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
 	},
 	section: {
 		flexGrow: 1,
-		justifyContent: "center",
+		justifyContent: "flex-start",
 		alignItems: "center",
 	},
 	table: {
@@ -58,6 +58,18 @@ const styles = StyleSheet.create({
 		color: "#333",
 		fontWeight: "bold",
 	},
+	chartContainer: {
+		marginVertical: 20,
+		// marginBottom: 20,
+		width: "90%",
+		alignItems: "center",
+	},
+	chartImage: {
+		width: "100%",
+		minWidth: 500,
+		minHeight: 300,
+		objectFit: "contain",
+	},
 });
 
 // Componente per la Tabella (Pagina 1)
@@ -104,23 +116,26 @@ const TablePage = ({
 };
 
 // Componente per Grafici (Pagina 2)
-// const ChartsPage = ({
-// 	weekChartImage,
-// 	monthChartImage,
-// }: {
-// 	weekChartImage: string;
-// 	monthChartImage: string;
-// }) => (
-// 	<Page size="A4" style={styles.page}>
-// 		<View style={styles.section}>
-// 			<Text style={{ fontSize: 18, marginBottom: 10 }}>Grafici Ultimi 7 Giorni e Mese</Text>
-// 			<Image style={styles.chartImage} src={weekChartImage} />
-// 			<Text style={{ marginTop: 10, marginBottom: 10 }}>Ultimi 7 Giorni</Text>
-// 			<Image style={styles.chartImage} src={monthChartImage} />
-// 			<Text style={{ marginTop: 10 }}>Ultimo Mese</Text>
-// 		</View>
-// 	</Page>
-// );
+const ChartsPage = ({
+	weekChartImage,
+	monthChartImage,
+}: {
+	weekChartImage: string;
+	monthChartImage: string;
+}) => (
+	<Page size="A4" style={styles.page}>
+		<View style={styles.section}>
+			<View style={styles.chartContainer}>
+				<Text style={styles.title}>Last 7 days usage</Text>
+				<Image src={weekChartImage} />
+			</View>
+			<View style={styles.chartContainer}>
+				<Text style={styles.title}>Last 4 weeks usage</Text>
+				<Image style={styles.chartImage} src={monthChartImage} />
+			</View>
+		</View>
+	</Page>
+);
 
 // Documento Principale
 export const ReportPDF = ({
@@ -138,6 +153,6 @@ export const ReportPDF = ({
 }) => (
 	<Document>
 		<TablePage data={data} />
-		{/* <ChartsPage weekChartImage={weekChart} monthChartImage={monthChart} /> */}
+		<ChartsPage weekChartImage={weekChart} monthChartImage={monthChart} />
 	</Document>
 );
