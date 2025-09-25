@@ -1,7 +1,7 @@
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Card } from "react-bootstrap";
-import type { RoomsUsageData } from "../../types/Types";
+import { CHART_COLORS, type RoomsUsageData } from "../../types/Types";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -22,7 +22,7 @@ interface DoughnutChartProps {
 	colors: { backgroundColor: string[]; borderColor: string[] };
 }
 
-const UsageDoughnutChart = ({ data, colors }: DoughnutChartProps) => {
+const UsageDoughnutChart = ({ data /* colors */ }: DoughnutChartProps) => {
 	const presenceData = data.filter((entry) => entry.value === 1 && entry.room_name);
 
 	const timePerRoom = presenceData.reduce((acc, entry) => {
@@ -42,8 +42,8 @@ const UsageDoughnutChart = ({ data, colors }: DoughnutChartProps) => {
 			{
 				label: "Rooms Usage",
 				data: times,
-				backgroundColor: colors.backgroundColor,
-				borderColor: colors.borderColor,
+				backgroundColor: CHART_COLORS.backgroundColor,
+				borderColor: CHART_COLORS.borderColor,
 				borderWidth: 2,
 			},
 		],

@@ -1,158 +1,152 @@
-import { Document, Page, Text, View, Image, StyleSheet } from "@react-pdf/renderer";
+import type { pdfTableData } from "../../types/Types";
+import type jsPDF from "jspdf";
+import { autoTable, type Styles } from "jspdf-autotable";
+import * as htmlToImage from "html-to-image";
 
-// Stili globali
-// Definizione degli stili per la tabella
-const styles = StyleSheet.create({
-	page: {
-		flexDirection: "column",
-		padding: 20,
-		backgroundColor: "#f5f5f5",
-	},
-	section: {
-		flexGrow: 1,
-		justifyContent: "flex-start",
-		alignItems: "center",
-	},
-	table: {
-		width: "90%",
-		borderWidth: 1,
-		borderColor: "#333",
-		borderStyle: "solid",
-		borderRadius: 4,
-		overflow: "hidden",
-	},
-	tableRow: {
-		flexDirection: "row",
-		borderBottomWidth: 1,
-		borderBottomColor: "#333",
-		backgroundColor: "#fff",
-	},
-	headerRow: {
-		flexDirection: "row",
-		borderBottomWidth: 2,
-		borderBottomColor: "#000",
-		backgroundColor: "#e0e0e0",
-		fontWeight: "bold",
-	},
-	tableCell: {
-		flex: 1,
-		padding: 8,
+// Styles for the table
+const tableStyles = {
+	styles: {
+		cellPadding: 8,
 		fontSize: 10,
-		textAlign: "center",
-		borderRightWidth: 1,
-		borderRightColor: "#333",
+		textColor: [51, 51, 51],
+		halign: "center",
+		lineWidth: 0.3,
+		lineColor: [51, 51, 51],
+		fillColor: [255, 255, 255],
 	},
-	headerCell: {
-		flex: 1,
-		padding: 8,
+	headStyles: {
+		cellPadding: 8,
 		fontSize: 11,
-		textAlign: "center",
-		fontWeight: "bold",
-		borderRightWidth: 1,
-		borderRightColor: "#333",
+		fontStyle: "bold",
+		textColor: [51, 51, 51],
+		halign: "center",
+		lineWidth: 0.3,
+		lineColor: [51, 51, 51],
+		fillColor: [108, 117, 125],
+		minCellHeight: 20,
 	},
-	title: {
-		fontSize: 18,
-		marginBottom: 20,
-		textAlign: "center",
-		color: "#333",
-		fontWeight: "bold",
+	bodyStyles: {
+		fillColor: [255, 255, 255],
+		lineWidth: { right: 0.3, bottom: 0.3 },
+		lineColor: [51, 51, 51],
 	},
-	chartContainer: {
-		marginVertical: 20,
-		// marginBottom: 20,
-		width: "90%",
-		alignItems: "center",
+	alternateRowStyles: {
+		fillColor: [245, 245, 245],
 	},
-	chartImage: {
-		width: "100%",
-		minWidth: 500,
-		minHeight: 300,
-		objectFit: "contain",
-	},
-});
-
-// Componente per la Tabella (Pagina 1)
-const TablePage = ({
-	data,
-}: {
-	data: {
-		"Last 7 days": Record<string, number>;
-		"Last month": Record<string, number>;
-		"All time": Record<string, number>;
-	};
-}) => {
-	const rooms = Object.keys(data["Last 7 days"]);
-
-	return (
-		<Page size="A4" style={styles.page}>
-			<View style={styles.section}>
-				<Text style={styles.title}>Rooms Usage Report</Text>
-				<View style={styles.table}>
-					{/* Header: Periodi come righe, stanze come colonne */}
-					<View style={styles.headerRow}>
-						<Text style={styles.headerCell}>Period</Text>
-						{rooms.map((room) => (
-							<Text key={room} style={styles.headerCell}>
-								{room}
-							</Text>
-						))}
-					</View>
-					{/* Dati */}
-					{Object.entries(data).map(([period, values]) => (
-						<View key={period} style={styles.tableRow}>
-							<Text style={styles.tableCell}>{period}</Text>
-							{rooms.map((room) => (
-								<Text key={`${room}-${period}`} style={styles.tableCell}>
-									{values[room] ? Math.round(values[room]) + "min" : "-"}
-								</Text>
-							))}
-						</View>
-					))}
-				</View>
-			</View>
-		</Page>
-	);
+	margin: { top: 40, left: 20, right: 20 },
+	theme: "grid",
 };
 
-// Componente per Grafici (Pagina 2)
-const ChartsPage = ({
-	weekChartImage,
-	monthChartImage,
-}: {
-	weekChartImage: string;
-	monthChartImage: string;
-}) => (
-	<Page size="A4" style={styles.page}>
-		<View style={styles.section}>
-			<View style={styles.chartContainer}>
-				<Text style={styles.title}>Last 7 days usage</Text>
-				<Image src={weekChartImage} />
-			</View>
-			<View style={styles.chartContainer}>
-				<Text style={styles.title}>Last 4 weeks usage</Text>
-				<Image style={styles.chartImage} src={monthChartImage} />
-			</View>
-		</View>
-	</Page>
-);
-
-// Documento Principale
-export const ReportPDF = ({
+async function addTable({
+	doc,
+	rooms,
 	data,
-	weekChart,
-	monthChart,
+	date,
 }: {
-	data: {
-		"Last 7 days": Record<string, number>;
-		"Last month": Record<string, number>;
-		"All time": Record<string, number>;
-	}; //e.g. period="last 7 days", rooms=["Room A", "Room B"], Room A=120, Room B=90
-	weekChart: string; // Base64 image
-	monthChart: string; // Base64 image
-}) => (
-	<Document>
-		<TablePage data={data} />
-		<ChartsPage weekChartImage={weekChart} monthChartImage={monthChart} />
-	</Document>
-);
+	doc: jsPDF;
+	rooms: string[];
+	data: pdfTableData;
+	date: Date;
+}) {
+	const text = "Report created from " + date.toLocaleDateString();
+	doc.setFontSize(10);
+	doc.text(text, doc.internal.pageSize.getWidth() - 10, 10, { align: "right" });
+	doc.setFontSize(30);
+	doc.text("USAGE REPORT", doc.internal.pageSize.getWidth() / 2, 80, { align: "center" });
+
+	//create table
+	autoTable(doc, {
+		startY: 100, // Under the title
+		head: [["Period", ...rooms]],
+		// body: Object.entries(data).map(([period, values]) => [period, ...rooms.map((room) => values[room])]),
+		body: [
+			[{ content: "PAST 7 DAYS", styles: { fontStyle: "bold" } }],
+			...data.weekReport.map(({ day, data }) => [day, ...rooms.map((room) => data[room])]),
+			[{ content: "PAST 4 WEEKS", styles: { fontStyle: "bold" } }],
+			...data.monthReport.map(({ week, data }) => [week, ...rooms.map((room) => data[room])]),
+			[{ content: "TOTAL", styles: { fontStyle: "bold" } }],
+			...Object.entries({
+				"Last 7 days": data["Last 7 days"],
+				"Last month": data["Last month"],
+				"All time": data["All time"],
+			}).map(([period, values]) => [period, ...rooms.map((room) => values[room])]),
+		],
+		styles: tableStyles as Partial<Styles>,
+		didDrawCell: (table) => {
+			if (
+				table.row.index === data.weekReport.length ||
+				table.row.index === data.weekReport.length + 1 + data.monthReport.length
+			) {
+				const { x, y, width, height } = table.cell;
+				doc.setLineWidth(0.6);
+				doc.setDrawColor(51, 51, 51);
+				doc.line(x, y + height, x + width, y + height);
+			}
+		},
+	});
+
+	return { doc };
+}
+
+async function addImages({ doc, elements }: { doc: jsPDF; elements: NodeListOf<Element> }) {
+	const padding = 10;
+	const marginTop = 20;
+	let top = marginTop;
+	const imageTitles = ["Last 7 days report", "Last 4 weeks report"];
+
+	// Iterates over the charts and adds them to the PDF
+	for (let i = 0; i < elements.length; i++) {
+		const el = elements.item(i) as HTMLElement; //current chart
+		let imgData;
+
+		try {
+			imgData = await htmlToImage.toPng(el); //transform the chart into an image
+		} catch (error) {
+			console.warn("Errore durante la conversione in immagine:", error);
+			continue; // Skip if conversion fails
+		}
+
+		// Height and width of the image
+		let elHeight = el.offsetHeight;
+		let elWidth = el.offsetWidth;
+
+		const pageWidth = doc.internal.pageSize.getWidth();
+
+		// If the image is too wide, resize it to fit in the page
+		if (elWidth > pageWidth) {
+			const ratio = pageWidth / elWidth;
+			elHeight = elHeight * ratio - padding * 2;
+			elWidth = elWidth * ratio - padding * 2;
+		}
+
+		const pageHeight = doc.internal.pageSize.getHeight();
+
+		// If the image is too big for the current page, add a new page
+		if (top + elHeight > pageHeight) {
+			doc.addPage();
+			top = marginTop;
+		}
+
+		// doc.setFontSize(30);
+		doc.setFont("helvetica", "bold");
+		doc.text(imageTitles[i], pageWidth / 2, top + 10, { align: "center" });
+		top += 10;
+
+		doc.addImage(imgData, "PNG", padding, top, elWidth, elHeight, `image${i}`);
+		top += elHeight + marginTop;
+	}
+
+	return { doc, elements };
+}
+
+export const createPdf = async (
+	doc: jsPDF,
+	rooms: string[],
+	data: pdfTableData,
+	elements: NodeListOf<Element>,
+	date: Date,
+) => {
+	await addTable({ doc, rooms, data, date });
+	doc.addPage();
+	await addImages({ doc, elements });
+};

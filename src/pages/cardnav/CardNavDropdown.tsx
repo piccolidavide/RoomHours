@@ -2,7 +2,7 @@ import { NavDropdown } from "react-bootstrap";
 import { FaUserCircle } from "react-icons/fa";
 import handleUploadData from "../../utils/gui_add_ons/UploadDataToast";
 import handleLogout from "../../utils/gui_add_ons/LogoutToast";
-import ExportPDF from "../../utils/gui_add_ons/ExportPdf";
+import { ExportPDF } from "../../utils/gui_add_ons/ExportPdf";
 
 interface CardNavButtonProps {
 	username: string | null; // Username to be displayed in the dropdown
