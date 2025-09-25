@@ -39,6 +39,17 @@ export const CHART_COLORS = {
 	],
 };
 
+export type ChartData = {
+	labels: string[];
+	datasets: {
+		label: string;
+		data: number[];
+		backgroundColor: string[];
+		borderColor: string[];
+		borderWidth: number;
+	}[];
+};
+
 export type pdfTableData = {
 	/**
 	 * Array of object containing the total minutes spent in each room in each day of the last 7 days

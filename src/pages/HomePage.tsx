@@ -3,7 +3,7 @@ import { useAuth } from "../context/useAuth";
 import { usePdfContext } from "../context/usePdfContext";
 import { PdfProvider } from "../context/PdfContext";
 import { retrieveUserData, subscribeToRoomUsage } from "../services/supabase";
-import type { RoomsUsageData, ChartColors } from "../types/Types";
+import type { RoomsUsageData } from "../types/Types";
 import Spinner from "../utils/gui_add_ons/Spinner";
 import { formatDate, getDateFromString } from "../utils/FormatDate";
 import UsageDoughnutChart from "../utils/usage_charts/UsageDoughnutChart";
@@ -11,26 +11,6 @@ import UsageLineChart from "../utils/usage_charts/UsageLineChart";
 import DatePicker from "../utils/gui_add_ons/DatePicker";
 import UsageBarChart from "../utils/usage_charts/UsageBarChart";
 import UsageGroupedBarChart from "../utils/usage_charts/UsageGroupedBarChart";
-
-// Colors for the charts
-// const chartColors = {
-// 	backgroundColor: [
-// 		"rgba(255, 99, 132, 0.2)",
-// 		"rgba(54, 162, 235, 0.2)",
-// 		"rgba(255, 206, 86, 0.2)",
-// 		"rgba(75, 192, 143, 0.2)",
-// 		"rgba(153, 102, 255, 0.2)",
-// 		"rgba(255, 159, 64, 0.2)",
-// 	],
-// 	borderColor: [
-// 		"rgba(255, 99, 122, 1)",
-// 		"rgba(54, 162, 235, 1)",
-// 		"rgba(255, 206, 86, 1)",
-// 		"rgba(75, 192, 143, 1)",
-// 		"rgba(153, 102, 255, 1)",
-// 		"rgba(255, 159, 64, 1)",
-// 	],
-// };
 
 /**
  * HomePage component.
@@ -134,13 +114,13 @@ export default function HomePage() {
 				<h2 className="divider gradient">Daily recap</h2>
 			</div>
 			<div className="chart-container">
-				<UsageDoughnutChart selectedDate={selectedDate} data={filteredData} colors={ChartColors} />
+				<UsageDoughnutChart selectedDate={selectedDate} data={filteredData} />
 			</div>
 			<div className="chart-container">
-				<UsageBarChart selectedDate={selectedDate} data={filteredData} colors={chartColors} />
+				<UsageBarChart selectedDate={selectedDate} data={filteredData} />
 			</div>
 			<div className="chart-container">
-				<UsageLineChart selectedDate={selectedDate} data={filteredData} colors={chartColors} />
+				<UsageLineChart selectedDate={selectedDate} data={filteredData} />
 			</div>
 			<div className="text-center mt-5 text-secondary">
 				<h2 className="divider gradient">7 days recap</h2>
@@ -150,7 +130,6 @@ export default function HomePage() {
 					<UsageGroupedBarChart
 						selectedDate={selectedDate}
 						roomsUsageData={roomUsageData}
-						colors={chartColors}
 						type="week"
 					/>
 				</div>
@@ -161,7 +140,6 @@ export default function HomePage() {
 					<UsageGroupedBarChart
 						selectedDate={selectedDate}
 						roomsUsageData={roomUsageData}
-						colors={chartColors}
 						type="month"
 					/>
 				</div>
