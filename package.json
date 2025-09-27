@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "doc": "typedoc --options typedoc.json"
   },
   "dependencies": {
     "@html2canvas/html2canvas": "^1.6.3",
@@ -46,6 +47,7 @@
     "globals": "^16.3.0",
     "sass": "^1.91.0",
     "sass-embedded": "^1.91.0",
+    "typedoc": "^0.28.13",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.39.1",
     "vite": "^7.1.2"

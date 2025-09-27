@@ -88,4 +88,4 @@ CREATE POLICY "Enable users to view their own data only" ON public.rooms_usage_p
 
 -- Enabling Realtime for rooms_usage_periods table
 ALTER TABLE public.rooms_usage_periods ENABLE ROW LEVEL SECURITY;
-SELECT supabase_realtime.publications_add_table('public.rooms_usage_periods');
+ALTER publication supabase_realtime ADD TABLE rooms_usage_periods

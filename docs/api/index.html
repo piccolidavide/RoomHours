@@ -1,0 +1,176 @@
+<!DOCTYPE html><html class="default" lang="en" data-base="./"><head><meta charset="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>Rooms usage application - v0.0.0</title><meta name="description" content="Documentation for Rooms usage application"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="assets/style.css"/><link rel="stylesheet" href="assets/highlight.css"/><script defer src="assets/main.js"></script><script async src="assets/icons.js" id="tsd-icons-script"></script><script async src="assets/search.js" id="tsd-search-script"></script><script async src="assets/navigation.js" id="tsd-nav-script"></script></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os";document.body.style.display="none";setTimeout(() => window.app?app.showPage():document.body.style.removeProperty("display"),500)</script><header class="tsd-page-toolbar"><div class="tsd-toolbar-contents container"><a href="index.html" class="title">Rooms usage application - v0.0.0</a><div id="tsd-toolbar-links"><a href="https://github.com/piccolidavide/RoomHours.git">GitHub</a></div><button id="tsd-search-trigger" class="tsd-widget" aria-label="Search"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-search"></use></svg></button><dialog id="tsd-search" aria-label="Search"><input role="combobox" id="tsd-search-input" aria-controls="tsd-search-results" aria-autocomplete="list" aria-expanded="true" autocapitalize="off" autocomplete="off" placeholder="Search the docs" maxLength="100"/><ul role="listbox" id="tsd-search-results"></ul><div id="tsd-search-status" aria-live="polite" aria-atomic="true"><div>Preparing search index...</div></div></dialog><a href="#" class="tsd-widget menu" id="tsd-toolbar-menu-trigger" data-toggle="menu" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-menu"></use></svg></a></div></header><div class="container container-main"><div class="col-content"><div class="tsd-page-title"><h1>Rooms usage application - v0.0.0</h1></div><div class="tsd-panel tsd-typography"><h1 id="room-usage-application" class="tsd-anchor-link">Room usage application<a href="#room-usage-application" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h1><!-- This a React + Typescript web application using Vite.
+It lets users upload their room own usage data and lets them interact with charts. -->
+<p>Web application that lets users view statistics on the time spent on various rooms of a house.
+A new user can signup and upload a file containing the data of the usage of various rooms in a time period,
+this data will then be saved into a Supabase database used to render various interactive charts for the time spent in each room in the dataset.</p>
+<h2 id="built-with" class="tsd-anchor-link">Built with:<a href="#built-with" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><ul>
+<li>
+<p><a href="https://nodejs.org/en"><img src="https://img.shields.io/badge/node.js-339933?style=for-the-badge&amp;logo=Node.js&amp;logoColor=white" alt="Node"></a></p>
+</li>
+<li>
+<p><a href="https://react.dev/"><img src="https://img.shields.io/badge/-ReactJs-61DAFB?logo=react&amp;logoColor=white&amp;style=for-the-badge" alt="React"></a></p>
+</li>
+<li>
+<p><a href="https://vite.dev/"><img src="https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&amp;logo=Vite&amp;logoColor=white" alt="Vite"></a></p>
+</li>
+<li>
+<p><a href="https://getbootstrap.com/"><img src="https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&amp;logo=bootstrap&amp;logoColor=white" alt="Bootstrap"></a></p>
+</li>
+<li>
+<p><a href="https://supabase.com/"><img src="https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&amp;logo=supabase&amp;logoColor=white" alt="Supabase"></a></p>
+</li>
+</ul>
+<h2 id="requirements" class="tsd-anchor-link">Requirements<a href="#requirements" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><p>To run this application you need first install:</p>
+<ol>
+<li><strong>NodeJS</strong> version 20.x or superior; it includes npm (Node Packet Manager) to install dependencies.</li>
+<li><strong>Git</strong> to clone the repo from github.</li>
+</ol>
+<h3 id="on-windows" class="tsd-anchor-link">On Windows<a href="#on-windows" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><ul>
+<li>
+<p>Install Nodejs from the website <a href="https://nodejs.org/en">nodejs.org</a> selecting a LTS (Long Term Support) version and follow the installer.</p>
+</li>
+<li>
+<p>Install Git from the website <a href="https://git-scm.com/downloads">gitscm.com</a> and follow the installer selecting the default configurations.</p>
+</li>
+<li>
+<p>To verify the installation open a command prompt window (cmd) and run</p>
+<blockquote>
+<p>git --version</p>
+</blockquote>
+<blockquote>
+<p>node --version</p>
+</blockquote>
+<blockquote>
+<p>npm --version</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="on-ubuntu" class="tsd-anchor-link">On Ubuntu<a href="#on-ubuntu" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><ul>
+<li>
+<p>Open a terminal and update system</p>
+<blockquote>
+<p>sudo apt update</p>
+</blockquote>
+<blockquote>
+<p>sudo apt upgrade</p>
+</blockquote>
+</li>
+<li>
+<p>Install Node and npm</p>
+<blockquote>
+<p>sudo apt install -y nodejs npm</p>
+</blockquote>
+</li>
+<li>
+<p>Install Git</p>
+<blockquote>
+<p>sudo apt install -y git</p>
+</blockquote>
+</li>
+<li>
+<p>Verify the installation:</p>
+<blockquote>
+<p>git --version</p>
+</blockquote>
+<blockquote>
+<p>node -v</p>
+</blockquote>
+<blockquote>
+<p>npm -v</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="download-and-install-application" class="tsd-anchor-link">Download and install application<a href="#download-and-install-application" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><p>After making sure both git and node are installed you can procede to download the project from the github repo.</p>
+<ul>
+<li>
+<p>Open the command prompt (on Windows) or a terminal (on Ubuntu)</p>
+</li>
+<li>
+<p>Navigate to the directory you want to install the the project</p>
+</li>
+<li>
+<p>Run</p>
+<blockquote>
+<p>git clone <a href="https://github.com/piccolidavide/RoomHours.git">https://github.com/piccolidavide/RoomHours.git</a></p>
+</blockquote>
+</li>
+<li>
+<p>Navigate to the project directory</p>
+<blockquote>
+<p>cd RoomHours</p>
+</blockquote>
+</li>
+<li>
+<p>Install dependencies</p>
+<blockquote>
+<p>npm install</p>
+</blockquote>
+</li>
+<li>
+<p>This will install all the dependencies needed to run the application.</p>
+<p>You can now run the project:</p>
+<blockquote>
+<p>npm run dev</p>
+</blockquote>
+<p>Open the browser and navigate to the address shown in the console (usually <a href="http://localhost:5173/">http://localhost:5173/</a>)</p>
+</li>
+</ul>
+<h2 id="database-setup" class="tsd-anchor-link">Database setup<a href="#database-setup" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><p>Right now you can run the project but you won't be able to use it fully since you need to use supabase for the database.</p>
+<ul>
+<li>
+<p>Create an <strong>.env</strong> file in the root directory of the project with two variables</p>
+<blockquote>
+<p>VITE_SUPABASE_URL=</p>
+</blockquote>
+<blockquote>
+<p>VITE_SUPABASE_ANON_KEY=</p>
+</blockquote>
+</li>
+<li>
+<p>Head to <a href="https://supabase.com/">supabase</a> website and create a free account, and create a new project.</p>
+<p>Open the project on the website and on the left side of the screen click on <strong>Project settings</strong> and again on <em>Data API</em></p>
+<p>Copy the project URL and paste it in the env variable</p>
+<pre><code> VITE_SUPABASE_URL= your_project_url
+</code></pre>
+<p>Then click on <em>API Keys</em> and copy the value of the <em>anon public</em> key, paste it in env</p>
+<pre><code>VITE_SUPABASE_ANON_KEY= your_anon_key
+</code></pre>
+</li>
+<li>
+<p>Open the sql editor and paste the sql script saved in the file <strong>schema.sql</strong></p>
+<p>Run the script and it will create all the tables and policies needed to use the application.</p>
+</li>
+</ul>
+<h2 id="usage" class="tsd-anchor-link">Usage<a href="#usage" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><p>After creating your account you will be redirected to the home page where you can upload your data.</p>
+<p>The application accepts 2 types of input files:</p>
+<ol>
+<li><strong>csv</strong></li>
+<li><strong>json</strong></li>
+</ol>
+<h3 id="csv-file" class="tsd-anchor-link">csv file<a href="#csv-file" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><p>The csv file must have this type of header:</p>
+<pre><code>&gt; Timestamp,room1,room2,...,roomN
+</code></pre>
+<p>and the data should be in the form:</p>
+<pre><code>2024-01-01 00:00:18,0,0,...,0
+2024-01-01 00:01:18,0,0,...,1
+2024-01-01 00:02:07,1,0,...,0
+2024-01-01 00:03:35,0,0,...,1
+2024-01-01 00:04:17,1,0,...,0
+</code></pre>
+<p>where 1 indicates presence in a room for that timestamp (only one presence per row is required).</p>
+<h3 id="json-file" class="tsd-anchor-link">json file<a href="#json-file" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><p>The json file should be an array of object with structure:</p>
+<pre><code>[
+    {
+        &quot;Timestamp&quot;: &quot;2024-01-01 00:00:18&quot;,
+        &quot;Rooms&quot;: {
+            &quot;room1&quot;: 1,
+            &quot;room2&quot;: 0,
+            ...
+            &quot;roomN&quot;: 0
+        }
+    },
+    ...
+]
+</code></pre>
+<!-- Shields -->
+</div></div><div class="col-sidebar"><div class="page-menu"><div class="tsd-navigation settings"><details class="tsd-accordion"><summary class="tsd-accordion-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-chevronDown"></use></svg><h3>Settings</h3></summary><div class="tsd-accordion-details"><div class="tsd-filter-visibility"><span class="settings-label">Member Visibility</span><ul id="tsd-filter-options"><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-inherited" name="inherited" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Inherited</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-external" name="external"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>External</span></label></li></ul></div><div class="tsd-theme-toggle"><label class="settings-label" for="tsd-theme">Theme</label><select id="tsd-theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></div></div></details></div><details open class="tsd-accordion tsd-page-navigation"><summary class="tsd-accordion-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-chevronDown"></use></svg><h3>On This Page</h3></summary><div class="tsd-accordion-details"><a href="#room-usage-application"><span>Room usage application</span></a><ul><li><a href="#built-with"><span>Built with:</span></a></li><li><a href="#requirements"><span>Requirements</span></a></li><li><ul><li><a href="#on-windows"><span>On <wbr/>Windows</span></a></li><li><a href="#on-ubuntu"><span>On <wbr/>Ubuntu</span></a></li></ul></li><li><a href="#download-and-install-application"><span>Download and install application</span></a></li><li><a href="#database-setup"><span>Database setup</span></a></li><li><a href="#usage"><span>Usage</span></a></li><li><ul><li><a href="#csv-file"><span>csv file</span></a></li><li><a href="#json-file"><span>json file</span></a></li></ul></li></ul></div></details></div><div class="site-menu"><nav id="tsd-sidebar-links" class="tsd-navigation"><a href="https://github.com/piccolidavide/RoomHours.git" class="tsd-nav-link">GitHub</a></nav><nav class="tsd-navigation"><a href="modules.html">Rooms usage application - v0.0.0</a><ul class="tsd-small-nested-navigation" id="tsd-nav-container"><li>Loading...</li></ul></nav></div></div></div><footer></footer><div class="overlay"></div></body></html>

@@ -96,6 +96,7 @@ Right now you can run the project but you won't be able to use it fully since yo
 -   Create an **.env** file in the root directory of the project with two variables
 
     > VITE_SUPABASE_URL=
+
     > VITE_SUPABASE_ANON_KEY=
 
 -   Head to [supabase](https://supabase.com/) website and create a free account, and create a new project.

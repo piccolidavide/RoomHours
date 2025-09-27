@@ -13,6 +13,7 @@ import { toast } from "react-toastify";
 export default function LoginPage() {
 	const [email, setEmail] = useState(""); // State to hold the email input
 	const [password, setPassword] = useState(""); // State to hold the password input
+	const [showPassword, setShowPassword] = useState(false);
 	const navigate = useNavigate(); // Hook to navigate to different pages
 
 	/**
@@ -51,38 +52,44 @@ export default function LoginPage() {
 
 	// Render the login form
 	return (
-		<Container className="mt-5">
+		<Container className="mt-5 min-vh-100 align-items-center">
 			<Row className="justify-content-center">
-				<Col md={4}>
+				<Col md={4} className="w-100">
 					<Card className="form-card">
 						<Card.Body>
 							<h3 className="text-center mb-4">Login to your account</h3>
 							<Form onSubmit={handleLogin}>
 								<Form.Group className="mb-4" controlId="email">
-									{/* <Form.Label>Email</Form.Label> */}
 									<Form.Control
 										type="email"
 										value={email}
 										onChange={(e) => setEmail(e.target.value)}
-										placeholder="Inserisci la tua email"
+										placeholder="Enter email"
 										required
 									/>
 								</Form.Group>
-								<Form.Group className="mb-4" controlId="password">
-									{/* <Form.Label>Password</Form.Label> */}
+								<Form.Group className="mb-1" controlId="password">
 									<Form.Control
-										type="password"
+										type={showPassword ? "text" : "password"}
 										value={password}
 										onChange={(e) => setPassword(e.target.value)}
-										placeholder="Inserisci la tua password"
+										placeholder="Enter password"
 										required
+									/>
+								</Form.Group>
+								<Form.Group className="mb-3">
+									<Form.Check
+										type="checkbox"
+										label="show password"
+										checked={showPassword}
+										onChange={(e) => setShowPassword(e.target.checked)}
 									/>
 								</Form.Group>
 								<Button variant="primary" type="submit" className="w-100">
 									Login
 								</Button>
 								<p className="text-center mt-3">
-									Non hai un account? <Link to="/SignupPage">Registrati</Link>
+									Don't have an account? <Link to="/SignupPage">Sign up</Link>
 								</p>
 							</Form>
 						</Card.Body>
