@@ -4,9 +4,6 @@ import { addDays, startOfWeek } from "date-fns";
 import type { pdfTableData, RoomsUsageData } from "../../types/Types";
 import { createPdf } from "./ReportPDF";
 import jsPDF from "jspdf";
-// import { pdf } from "@react-pdf/renderer";
-// import { saveAs } from "file-saver";
-// import html2canvas from "@html2canvas/html2canvas";
 
 /**
  * Filter the usage data array based on the start and end dates.

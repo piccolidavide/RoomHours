@@ -6,10 +6,10 @@ import { retrieveUserData, subscribeToRoomUsage } from "../services/supabase";
 import type { RoomsUsageData } from "../types/Types";
 import Spinner from "../utils/gui_add_ons/Spinner";
 import { formatDate, getDateFromString } from "../utils/FormatDate";
-import UsageDoughnutChart from "../utils/usage_charts/UsageDoughnutChart";
-import UsageLineChart from "../utils/usage_charts/UsageLineChart";
 import DatePicker from "../utils/gui_add_ons/DatePicker";
+import UsageDoughnutChart from "../utils/usage_charts/UsageDoughnutChart";
 import UsageBarChart from "../utils/usage_charts/UsageBarChart";
+import UsageLineChart from "../utils/usage_charts/UsageLineChart";
 import UsageGroupedBarChart from "../utils/usage_charts/UsageGroupedBarChart";
 
 /**
