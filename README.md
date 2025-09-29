@@ -83,11 +83,7 @@ After making sure both git and node are installed you can procede to download th
 
 -   This will install all the dependencies needed to run the application.
 
-    You can now run the project:
-
-    > npm run dev
-
-    Open the browser and navigate to the address shown in the console (usually http://localhost:5173/)
+    To run the project you first need to setup your supabase account and environment variables
 
 ## Database setup
 
@@ -114,6 +110,12 @@ Right now you can run the project but you won't be able to use it fully since yo
 -   Open the sql editor and paste the sql script saved in the file **schema.sql**
 
     Run the script and it will create all the tables and policies needed to use the application.
+
+-   You can now run the project:
+
+    > npm run dev
+
+    Open the browser and navigate to the address shown in the console (usually http://localhost:5173/)
 
 ## Usage
 
