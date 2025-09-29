@@ -162,6 +162,8 @@ const UsageGroupedBarChart = ({ selectedDate, roomsUsageData, type }: UsageGroup
 				<Bar
 					data={chartData}
 					options={{
+						responsive: true,
+						maintainAspectRatio: false,
 						scales: {
 							x: {
 								title: {

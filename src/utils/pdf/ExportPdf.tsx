@@ -4,6 +4,7 @@ import { addDays, startOfWeek } from "date-fns";
 import type { pdfTableData, RoomsUsageData } from "../../types/Types";
 import { createPdf } from "./ReportPDF";
 import jsPDF from "jspdf";
+import { toast } from "react-toastify";
 
 /**
  * Filter the usage data array based on the start and end dates.
@@ -134,6 +135,12 @@ const ExportPDF = () => {
 	const { roomsData, date } = usePdfContext();
 
 	const generatePdf = async () => {
+		// Check if there is data to export, if not show error toast and return
+		if (!roomsData.length) {
+			toast.error("No data to export", { autoClose: 3000 });
+			return;
+		}
+
 		// Find the room names
 		const rooms = [...new Set(roomsData.map((entry) => entry.room_name).filter(Boolean))] as string[];
 

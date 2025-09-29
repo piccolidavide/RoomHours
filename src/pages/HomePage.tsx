@@ -11,6 +11,8 @@ import UsageDoughnutChart from "../utils/usage_charts/UsageDoughnutChart";
 import UsageBarChart from "../utils/usage_charts/UsageBarChart";
 import UsageLineChart from "../utils/usage_charts/UsageLineChart";
 import UsageGroupedBarChart from "../utils/usage_charts/UsageGroupedBarChart";
+import { Button, Card, Col, Container, Row } from "react-bootstrap";
+import handleUploadData from "../utils/gui_add_ons/UploadDataToast";
 
 /**
  * HomePage component.
@@ -146,9 +148,25 @@ export default function HomePage() {
 			</PdfProvider>
 		</div>
 	) : (
-		// Render a message if no data is available
-		<p className="d-flex justify-content-center align-items-center text-center">
-			Nessun dato disponibile
-		</p>
+		// Insert form for data upload if there is no data available
+		<Container className="mt-5 min-vh-100 align-items-center">
+			<Row className="justify-content-center">
+				<Col md={4} className="w-100">
+					<Card className="form-card">
+						<Card.Body>
+							<h3 className="text-center mb-4">No data uploaded, upload now</h3>
+							<Button
+								onClick={handleUploadData}
+								variant="primary"
+								type="submit"
+								className="w-100"
+							>
+								Upload
+							</Button>
+						</Card.Body>
+					</Card>
+				</Col>
+			</Row>
+		</Container>
 	);
 }

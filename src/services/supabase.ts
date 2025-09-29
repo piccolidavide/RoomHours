@@ -375,12 +375,10 @@ const subscribeToRoomUsage = async (userId: string, onInsert: () => void): Promi
 				onInsert();
 			},
 		)
-		.subscribe((status) => {
-			console.log("Stato sottoscrizione:", status);
-
+		.subscribe((_status) => {
 			// Check for subscription errors
-			if (status === "CLOSED" || status === "CHANNEL_ERROR")
-				console.error("Sottoscrizione chiusa o con errore.");
+			// if (status === "CLOSED" || status === "CHANNEL_ERROR")
+			// 	console.error("Sottoscrizione chiusa o con errore.");
 		});
 
 	// remove subscription when component unmounts

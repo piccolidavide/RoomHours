@@ -102,6 +102,7 @@ const UploadToast = () => {
 		uploadRoomData(rooms, parsedData).then(({ success, error }) => {
 			if (success) {
 				toast.success("Dati caricati con successo!");
+				location.reload(); // Reload the page after successful upload
 			} else {
 				toast.error("Errore nel caricamento dei dati: " + error, {
 					autoClose: 3000,

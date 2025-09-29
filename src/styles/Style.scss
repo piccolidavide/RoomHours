@@ -362,6 +362,8 @@ $theme-colors: (
 		justify-content: center;
 		align-items: center;
 		margin-top: 1rem;
+		width: 100%;
+		height: 100%;
 	}
 
 	.chart-card {
@@ -386,6 +388,11 @@ $theme-colors: (
 				font-size: 1.2rem;
 				margin-top: 1rem;
 				color: $body-color;
+			}
+
+			canvas{
+				// width: 100% !important;
+				max-height: 100% !important;
 			}
 		}
 	}
