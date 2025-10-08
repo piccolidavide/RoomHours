@@ -3,7 +3,7 @@
 
 // Custom colors scheme
 $primary: #6f42c1; // Viola vibrante
-$secondary: #fd7e14; // Arancione vibrante
+$secondary: #01a5a5; // teal
 $dark: #212529; // Sfondo scuro
 $body-bg: $dark; // Sfondo generale del body
 $body-color: #f8f9fa; // Colore del testo chiaro
@@ -45,35 +45,40 @@ $theme-colors: (
 
 	// Custom button styles
 	.btn-primary {
-		background-image: linear-gradient(135deg, $primary, $secondary);
-		background-color: transparent;
+		// background-image: linear-gradient(135deg, $primary, $secondary);
+		background-image: $secondary;
+		// background-color: transparent;
+		background-color: $secondary;
 		border: 0px solid transparent; // O usa border-color: $primary se vuoi un bordo
 		color: #ffffff; // O $body-color per il tuo tema
 
 		&:hover {
-			background-image: linear-gradient(90deg, mix(black, $primary, 20%), mix(black, $secondary, 20%));
-			border-color: mix(black, $primary, 10%);
-		}
-
-		&:focus,
-		&:focus-visible {
-			box-shadow: 0 0 0 0.25rem rgba($primary, 0.5);
-		}
-	}
-
-	.btn-secondary {
-		background-color: $secondary;
-		border-color: $secondary;
-
-		&:hover {
-			background-color: mix(black, $secondary, 10%);
-			border-color: mix(black, $secondary, 10%);
+			// background-image: linear-gradient(90deg, mix(black, $primary, 20%), mix(black, $secondary, 20%));
+			// background-image: mix(black, $secondary, 40%);
+			background-color: mix(black, $secondary, 20%);
+			border-color: mix(black, $secondary, 40%);
 		}
 
 		&:focus,
 		&:focus-visible {
 			box-shadow: 0 0 0 0.25rem rgba($secondary, 0.5);
 		}
+	}
+
+	.btn-secondary {
+		background-color: mix(black, $primary, 20%);
+		border: 0px solid transparent; // O usa border-color: $primary se vuoi un bordo
+		color: #ffffff; // O $body-color per il tuo tema
+
+		&:hover {
+			background-color: mix(black, $primary, 10%);
+			border-color: mix(black, $primary, 10%);
+		}
+
+		// &:focus,
+		// &:focus-visible {
+		// 	box-shadow: 0 0 0 0.25rem rgba($primary, 0.5);
+		// }
 	}
 
 	// Custom form styles
@@ -86,14 +91,27 @@ $theme-colors: (
 			background-color: #343a40;
 			color: $body-color;
 			border-color: $secondary;
-			box-shadow: 0 0 0 0.25rem rgba(253, 126, 20, 0.25);
+			// box-shadow: 0 0 0 0.25rem rgba(253, 126, 20, 0.25);
 		}
 	}
-
+	
 	.form-check{
 		color: mix(black, $body-color, 40%);
 		display: flex;
 		align-items: center;
+		border-color: mix( #000000, $secondary,  40%);
+		
+		input{
+			&:checked{
+				background-color: $secondary !important;
+				border-color: $secondary !important;
+			}
+			&:focus {
+				box-shadow: 0 0 0 0.15rem rgba($secondary, 0.5);
+			}
+		}
+
+		
 		
 		label{
 			margin-left: 5px;
@@ -210,15 +228,16 @@ $theme-colors: (
 		
 		.card-nav-cta-button {
 			padding: 0.5rem 1rem; // Padding for better click area 
-			background-image: linear-gradient(90deg, $primary, $secondary); //give it a gradient look
-			background-color: transparent;
+			// background-image: linear-gradient(90deg, $primary, $secondary); //give it a gradient look
+			background-color: $secondary;
 			border: 0px solid transparent; // no border
 			color: #ffffff; // White text for contrast
 			
 			// On hover changes slightly the gradient and border color
 			&:hover {
-				background-image: linear-gradient(90deg, mix(black, $primary, 20%), mix(black, $secondary, 20%));
+				// background-image: linear-gradient(90deg, mix(black, $primary, 20%), mix(black, $secondary, 20%));
 				border-color: mix(black, $secondary, 10%);
+				background-color: mix(black, $secondary, 20%);
 			}
 			
 			// When clicked or focused, add an orange shadow

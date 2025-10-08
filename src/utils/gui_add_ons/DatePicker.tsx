@@ -34,7 +34,7 @@ const DatePicker = ({ dateChange, usableDates, selectedDate }: DatePickerProps) 
 
 	return (
 		<InputGroup className="date-picker">
-			<Button variant="primary" onClick={() => handleDateChange("prev")}>
+			<Button variant="secondary" onClick={() => handleDateChange("prev")}>
 				<FaChevronLeft />
 			</Button>
 			<Form.Control
@@ -44,7 +44,7 @@ const DatePicker = ({ dateChange, usableDates, selectedDate }: DatePickerProps) 
 				min={usableDates[0]}
 				max={usableDates[usableDates.length - 1]}
 			/>
-			<Button variant="primary" onClick={() => handleDateChange("next")}>
+			<Button variant="secondary" onClick={() => handleDateChange("next")}>
 				<FaChevronRight />
 			</Button>
 		</InputGroup>
